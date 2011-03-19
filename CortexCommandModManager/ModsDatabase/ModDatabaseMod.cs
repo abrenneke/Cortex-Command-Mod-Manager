@@ -28,5 +28,7 @@ namespace CortexCommandModManager.ModsDatabase
         public int DownloadCount { get; set; }
 
         public string Screenshot { get; set; }
+
+        public string DownloadLink { get; set; }
     }
 }

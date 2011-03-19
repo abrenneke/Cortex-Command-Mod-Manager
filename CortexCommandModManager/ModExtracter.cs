@@ -4,28 +4,29 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using SevenZip;
+using System.Security.AccessControl;
+using System.Threading;
 
 namespace CortexCommandModManager
 {
     public class ModExtracter
     {
-        private const string TempDirectoryName = "ModExtractorTemp";
+        private const string TempDirectoryName = "_modextract";
 
-        private static readonly string[] SupportedFileExtensions = new[] { ".rar", ".7z", ".zip" };
+        private static readonly string[] SupportedFileExtensions = new[] { ".rar", ".7z", ".zip", ".downloaded" };
+        private static readonly object lockObj = new object();
 
         private FileInfo packedFile;
 
         private string TempDirectory { get { return Path.Combine(Grabber.ModManagerDirectory, TempDirectoryName); } }
 
-        public ModExtracter()
-        {
-
-        }
-
         private void AssertTempDirectoryExists()
         {
             if (!Directory.Exists(TempDirectory))
-                Directory.CreateDirectory(TempDirectory);
+            {
+                var info = Directory.CreateDirectory(TempDirectory);
+                info.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+            }
         }
 
         public IList<string> Unpack(string packedModPath)
@@ -33,29 +34,43 @@ namespace CortexCommandModManager
             IList<string> extracted;
 
             SetAndVerifyPath(packedModPath);
-            try
+
+            //This will prevent the folder from being used multiple times at once.
+            lock (lockObj)
             {
-                CleanTempDirectory();
-                ExtractToTempDirectory();
-                extracted = MoveModFilesToCCDirectory();
-            }
-            finally
-            {
-                CleanTempDirectory();
+                try
+                {
+                    CleanTempDirectory();
+                    ExtractToTempDirectory();
+                    RemoveReadOnlyOnAllFiles(TempDirectory);
+                    extracted = MoveModFilesToCCDirectory();
+                }
+                finally
+                {
+                    CleanTempDirectory();
+                }
             }
 
             return extracted;
         }
 
+        private void RemoveReadOnlyOnAllFiles(string directory)
+        {
+            foreach (var file in new DirectoryInfo(directory).GetFiles())
+            {
+                if (file.Attributes.HasFlag(FileAttributes.ReadOnly))
+                    File.SetAttributes(file.FullName, FileAttributes.Normal);
+            }
+
+            foreach (var subDirectory in Directory.GetDirectories(directory))
+            {
+                RemoveReadOnlyOnAllFiles(subDirectory);
+            }
+        }
+
         public IList<string> Unpack(IEnumerable<string> packedMods)
         {
-            var extracted = new List<string>();
-            foreach (var packed in packedMods)
-            {
-                var subExtracted = Unpack(packed);
-                extracted.AddRange(subExtracted);
-            }
-            return extracted;
+            return packedMods.SelectMany(Unpack).ToList();
         }
 
         private void SetAndVerifyPath(string packedModPath)

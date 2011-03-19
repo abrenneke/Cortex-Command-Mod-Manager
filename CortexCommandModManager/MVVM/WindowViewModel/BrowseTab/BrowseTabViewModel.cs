@@ -19,6 +19,8 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.BrowseTab
 
         public ObservableCollection<ModDatabaseModViewModel> Mods { get; private set; }
 
+        public event Action ModListRequiresRefresh;
+
         private readonly ModDatabase modDatabase;
 
         private IList<ModDatabaseMod> mods;
@@ -50,9 +52,11 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.BrowseTab
             this.mods = mods;
 
             Mods.Clear();
-            foreach (var mod in mods)
+            foreach (var mod in mods.Where(x => x != null))
             {
-                Mods.Add(new ModDatabaseModViewModel(mod, modDatabase));
+                var vm = new ModDatabaseModViewModel(mod, modDatabase);
+                vm.ModInstalled += x => { if (ModListRequiresRefresh != null) ModListRequiresRefresh(); };
+                Mods.Add(vm);
             }
         }
     }

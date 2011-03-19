@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System;
+using System.Threading;
 
 namespace CortexCommandModManager
 {
@@ -63,7 +64,34 @@ namespace CortexCommandModManager
 
         public static void DeleteMod(Mod mod)
         {
-            Directory.Delete(mod.FullFolderPath, true);
+            DeleteDirectory(mod.FullFolderPath);
+        }
+
+        private static void DeleteDirectory(string directory)
+        {
+            var files = Directory.GetFiles(directory);
+            var directories = Directory.GetDirectories(directory);
+
+            foreach (var file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (var subDirectory in directories)
+            {
+                DeleteDirectory(subDirectory);
+            }
+
+            try
+            {
+                Directory.Delete(directory, false);
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(0);
+                Directory.Delete(directory, false);
+            }
         }
     }
 }

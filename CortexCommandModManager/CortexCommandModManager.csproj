@@ -170,12 +170,14 @@
     <Compile Include="MVVM\Utilities\CommandBehavior.cs" />
     <Compile Include="MVVM\Utilities\CommandExtensions.cs" />
     <Compile Include="MVVM\Utilities\DependencyObjectExtensions.cs" />
+    <Compile Include="MVVM\Utilities\DesignMode.cs" />
     <Compile Include="MVVM\Utilities\ElementHelper.cs" />
     <Compile Include="MVVM\Utilities\EventHandlerGenerator.cs" />
     <Compile Include="MVVM\Utilities\IInitializable.cs" />
     <Compile Include="MVVM\Utilities\IViewModel.cs" />
     <Compile Include="MVVM\Utilities\ViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\BrowseTab\BrowseTabViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\BrowseTab\DownloadedModSaver.cs" />
     <Compile Include="MVVM\WindowViewModel\BrowseTab\ModDatabaseModViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\GameSettingsTab\GameSettings.cs" />
     <Compile Include="MVVM\WindowViewModel\Menu\MenuIcons.cs" />

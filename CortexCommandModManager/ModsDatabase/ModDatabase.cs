@@ -33,6 +33,17 @@ namespace CortexCommandModManager.ModsDatabase
             client.DownloadDataAsync(url);
         }
 
+        public void DownloadModAsync(ModDatabaseMod mod, Action<byte[]> callback, DownloadProgressChangedEventHandler progressChanged = null )
+        {
+            var url = new Uri(ModDatabaseUrl, mod.DownloadLink);
+            var client = CreateClient();
+
+            client.DownloadDataCompleted += (o, e) => callback(e.Result);
+            client.DownloadProgressChanged += progressChanged;
+
+            client.DownloadDataAsync(url);
+        }
+
         private Uri MakeApiUrl(string method)
         {
             return new Uri(ModDatabaseUrl, "/api/ccmm/" + method);

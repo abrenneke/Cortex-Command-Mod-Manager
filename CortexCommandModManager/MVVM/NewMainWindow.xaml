@@ -43,7 +43,8 @@
 
         <!-- Run Cortex Command Box -->
         <Button Content="Run Cortex Command" FontSize="10" Width="113" Margin="0,-3,0,0" Height="24" Panel.ZIndex="2"
-                VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource runCCButtonStyle}" >
+                VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource runCCButtonStyle}" 
+                Command="{Binding RunCCCommand}">
         </Button>
 
         <!-- Main Tab Holder -->
@@ -114,13 +115,13 @@
                 </DockPanel>
             </TabItem>
             
-            <!-- Browse Mogs Tab -->
+            <!-- Browse Mods Tab -->
             <TabItem Header="Browse Mods" DataContext="{Binding BrowseViewModel}"
                      xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.BrowseTab"
                      xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities"
                      IsSelected="{Binding BrowseModsIsSelected, Mode=OneWayToSource}">
                 <Grid>
-                    <Grid Name="LoadingBrowseModsOverlay" Panel.ZIndex="10" Background="#88000000">
+                    <Grid Name="LoadingBrowseModsOverlay" Panel.ZIndex="10" Background="#88000000" vms:DesignMode.IsHidden="True">
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
                                 <Style.Triggers>
@@ -191,6 +192,49 @@
                                         </Grid>
                                         <TextBlock Margin="250,20,0,0" FontSize="20" Text="{Binding Title}" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                         <TextBlock Margin="250,50,0,0" FontSize="14" Text="{Binding ShortDescription}" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" />
+                                        <Grid Margin="0,20,30,0" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Button Content="Install" Name="DownloadModButton" Padding="4" Command="{Binding DownloadModCommand}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ModHasBeenDownloaded}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <ProgressBar Name="DownloadingModProgress" Minimum="0" Maximum="100" Width="120" Height="25" Value="{Binding ModDownloadProgress}" IsIndeterminate="{Binding IsIndeterminate}">
+                                                <ProgressBar.Style>
+                                                    <Style TargetType="{x:Type ProgressBar}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ModHasBeenDownloaded}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ProgressBar.Style>
+                                            </ProgressBar>
+                                            <Label Content="Mod Installed" Foreground="Green" FontSize="14">
+                                                <Label.Style>
+                                                    <Style TargetType="{x:Type Label}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ModHasBeenDownloaded}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+                                        </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -201,6 +245,7 @@
                 
             </TabItem>
 
+            <!-- Activities Tab -->
             <TabItem Header="Activities">
 
                 <TabItem.Resources>

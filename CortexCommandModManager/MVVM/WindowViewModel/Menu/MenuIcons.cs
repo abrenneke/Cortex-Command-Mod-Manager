@@ -18,6 +18,6 @@ namespace CortexCommandModManager.MVVM.WindowViewModel
         public Image File_Exit { get { return Resource.GetImage("xIcon.png"); } }
 
         /// <summary>Gets the icon for the Help/About menu item.</summary>
-        public Image Help_About { get { return Resource.GetImage("2009-12-26_231049.ico"); } }
+        public Image Help_About { get { return Resource.GetImage("cc-icon.ico"); } }
     }
 }
