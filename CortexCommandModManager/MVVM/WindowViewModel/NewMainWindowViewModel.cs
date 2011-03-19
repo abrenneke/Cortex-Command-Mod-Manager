@@ -27,6 +27,8 @@ namespace CortexCommandModManager.MVVM.WindowViewModel
         /// <summary>Gets or sets the view model for the Skirmishes tab.</summary>
         public IViewModel SkirmishesViewModel { get; set; }
 
+        /// <summary>Gets or sets the view model for the Browse Mods tab.</summary>
+        public IViewModel BrowseViewModel { get; set; }
 
         /// <summary>Gets or sets the width of the window.</summary>
         public double WindowWidth { get { return windowWidth; } set { windowWidth = value; OnPropertyChanged(x => WindowWidth); } }

@@ -6,6 +6,7 @@
         xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.Utilities"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:controls="clr-namespace:CortexCommandModManager.MVVM.Controls"
         mc:Ignorable="d"
         
         Width="{Binding WindowWidth, Mode=TwoWay}" MinWidth="440"
@@ -30,29 +31,37 @@
             <Border BorderBrush="DarkGray" BorderThickness="0,0,0,0">
                 <Menu HorizontalAlignment="Left" Background="Transparent">
                     
-                    <MenuItem Header="File">
+                    <MenuItem Header="Menu">
+                        <MenuItem Header="About" Icon="{Binding Icons.Help_About}" />
+                        <Separator />
                         <MenuItem Header="Settings" Icon="{Binding Icons.File_Settings}" />
                         <MenuItem Header="Exit" Icon="{Binding Icons.File_Exit}" />
                     </MenuItem>
-                    
-                    <MenuItem Header="Help">
-                        <MenuItem Header="About" Icon="{Binding Icons.Help_About}" />
-                    </MenuItem>
-                    
                 </Menu>
             </Border>
         </DockPanel>
 
         <!-- Run Cortex Command Box -->
-        <Button Content="Run Cortex Command" FontSize="10" Width="113" Margin="0,0,0,0" Height="24" 
+        <Button Content="Run Cortex Command" FontSize="10" Width="113" Margin="0,-3,0,0" Height="24" Panel.ZIndex="2"
                 VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource runCCButtonStyle}" >
         </Button>
 
         <!-- Main Tab Holder -->
-        <TabControl SelectedIndex="0" Margin="0,28,0,0" BorderThickness="0,1,0,0">
+        <TabControl SelectedIndex="0" Margin="0" BorderThickness="0,1,0,0">
+            
+            <TabControl.Template>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" IsItemsHost="True" Orientation="Horizontal" Margin="50,0,0,0" />
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1,0,0">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                        </Border>
+                    </DockPanel>
+                </ControlTemplate>
+            </TabControl.Template>
             
             <!-- Mods Tab -->
-            <TabItem Header="Mods" DataContext="{Binding ModsTabViewModel}" 
+            <TabItem Header="Mods" DataContext="{Binding ModsTabViewModel}"
                      xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.ModsTab"
                      xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities">
                 <TabItem.Resources>
@@ -64,6 +73,7 @@
                                     <Setter Property="Height" Value="23" />
                                     <Setter Property="HorizontalAlignment" Value="Left" />
                                     <Setter Property="VerticalAlignment" Value="Bottom" />
+                                    <Setter Property="Focusable" Value="False" />
                                 </Style>
                             </ResourceDictionary>
                         </ResourceDictionary.MergedDictionaries>
@@ -105,13 +115,93 @@
             </TabItem>
             
             <!-- Browse Mogs Tab -->
-            <TabItem Header="Browse Mods">
+            <TabItem Header="Browse Mods" DataContext="{Binding BrowseViewModel}"
+                     xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.BrowseTab"
+                     xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities"
+                     IsSelected="{Binding BrowseModsIsSelected, Mode=OneWayToSource}">
+                <Grid>
+                    <Grid Name="LoadingBrowseModsOverlay" Panel.ZIndex="10" Background="#88000000">
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoadingMods}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsLoadingMods}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <controls:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                    </Grid>
+                    
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
+                            <ToolBar>
+                                <Button Command="{Binding RefreshListCommand}" Focusable="False">
+                                    <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-refresh.png" Width="16" Height="16" />
+                                </Button>
+                            </ToolBar>
+                        </ToolBarTray>
+
+                        <ListView ItemsSource="{Binding Mods}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.Template>
+                                <ControlTemplate TargetType="{x:Type ListView}">
+                                    <Border BorderThickness="1" BorderBrush="Silver" Background="White">
+                                        <ScrollViewer Focusable="False">
+                                            <ItemsPresenter />
+                                        </ScrollViewer>
+                                    </Border>
+                                </ControlTemplate>
+                            </ListView.Template>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter Content="{TemplateBinding ContentControl.Content}" 
+                                                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" 
+                                                    ContentTemplateSelector="{TemplateBinding ContentControl.ContentTemplateSelector}"
+                                                    ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:ModDatabaseModViewModel}">
+                                    <Grid Height="100">
+                                        <Grid.Background>
+                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                <GradientStop Color="White" Offset="0" />
+                                                <GradientStop Color="LightGray" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Grid.Background>
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Center" Height="100" Width="200">
+                                            <Image Source="{Binding Screenshot}" StretchDirection="DownOnly" MaxHeight="100"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Grid>
+                                        <TextBlock Margin="250,20,0,0" FontSize="20" Text="{Binding Title}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                        <TextBlock Margin="250,50,0,0" FontSize="14" Text="{Binding ShortDescription}" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                    </DockPanel>
+                </Grid>
                 
             </TabItem>
 
-           
-
-            <TabItem Header="Custom Skirmish Waves">
+            <TabItem Header="Activities">
 
                 <TabItem.Resources>
                     <ContextMenu x:Key="inventoryItemsContextMenu">

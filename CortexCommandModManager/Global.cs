@@ -8,6 +8,7 @@ using CortexCommandModManager.Startup;
 using XmlConfig.Core;
 using CortexCommandModManager.MVVM.Utilities;
 using System.Threading;
+using CortexCommandModManager.MVVM.WindowViewModel.BrowseTab;
 
 namespace CortexCommandModManager
 {
@@ -110,7 +111,8 @@ namespace CortexCommandModManager
                 MenuViewModel = new MenuViewModel(),
                 ModsTabViewModel = new ModsTabViewModel(initialization),
                 SettingsTabViewModel = new SettingsTabViewModel(initialization.GameSettingsManager, initialization.SkirmishSettingsManager),
-                SkirmishesViewModel = new SkirmishesViewModel()
+                SkirmishesViewModel = new SkirmishesViewModel(),
+                BrowseViewModel = new BrowseTabViewModel()
             };
             viewModel.Initialize();
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CortexCommandModManager
@@ -9,7 +10,7 @@ namespace CortexCommandModManager
     public static class PresetManager
     {
         private static List<string> presetModsBuffer;
-        private const string PresetsFolder = "\\Presets";
+        private const string PresetsFolder = "presets";
         private const string PresetFileExtension = ".ccmmp";
 
         public static IList<Preset> GetAllPresets()
@@ -131,7 +132,7 @@ namespace CortexCommandModManager
         }
         private static string GetPresetFullFile(Preset preset)
         {
-            return Grabber.ModManagerDirectory + PresetsFolder + "\\" + GetPresetFileName(preset);
+            return Path.Combine(Grabber.ModManagerDirectory, PresetsFolder, GetPresetFileName(preset));
         }
         private static string GetPresetFileName(Preset preset)
         {
@@ -141,14 +142,8 @@ namespace CortexCommandModManager
         }
         private static List<Preset> GetAllPresetsFromFolder()
         {
-            string[] files = Directory.GetFiles(Grabber.ModManagerDirectory + PresetsFolder);
-            List<Preset> presetList = new List<Preset>();
-            foreach (string file in files)
-            {
-                Preset preset = GetPresetFromFile(file);
-                presetList.Add(preset);
-            }
-            return presetList;
+            var files = Directory.GetFiles(Path.Combine(Grabber.ModManagerDirectory, PresetsFolder));
+            return files.Select(GetPresetFromFile).ToList();
         }
 
         private static Preset GetPresetFromFile(string file)
@@ -181,9 +176,10 @@ namespace CortexCommandModManager
 
         private static void CheckForPresetsFolder()
         {
-            if (!Directory.Exists(Grabber.ModManagerDirectory + PresetsFolder))
+            var path = Path.Combine(Grabber.ModManagerDirectory, PresetsFolder);
+            if(!Directory.Exists(path))
             {
-                Directory.CreateDirectory(Grabber.ModManagerDirectory + PresetsFolder);
+                Directory.CreateDirectory(path);
             }
         }
 

@@ -15,8 +15,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Resources\cc-icon.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -47,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>
@@ -56,6 +55,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -145,10 +146,18 @@
     <Compile Include="LoadSaveActivitiesWindow.xaml.cs">
       <DependentUpon>LoadSaveActivitiesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModsDatabase\ModDatabase.cs" />
+    <Compile Include="ModsDatabase\ModDatabaseMod.cs" />
     <Compile Include="ModEntities.cs" />
     <Compile Include="ModExtracter.cs" />
     <Compile Include="ModListFilterer.cs" />
     <Compile Include="Exceptions\IncorrectCCMMFileTypeException.cs" />
+    <Compile Include="MVVM\Controls\Block.xaml.cs">
+      <DependentUpon>Block.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Controls\LoadingAnimation.xaml.cs">
+      <DependentUpon>LoadingAnimation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Native\MARGINS.cs" />
     <Compile Include="MVVM\Native\NativeWindow.cs" />
     <Compile Include="MVVM\NewMainWindow.xaml.cs">
@@ -166,6 +175,8 @@
     <Compile Include="MVVM\Utilities\IInitializable.cs" />
     <Compile Include="MVVM\Utilities\IViewModel.cs" />
     <Compile Include="MVVM\Utilities\ViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\BrowseTab\BrowseTabViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\BrowseTab\ModDatabaseModViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\GameSettingsTab\GameSettings.cs" />
     <Compile Include="MVVM\WindowViewModel\Menu\MenuIcons.cs" />
     <Compile Include="MVVM\WindowViewModel\Menu\MenuViewModel.cs" />
@@ -228,6 +239,14 @@
     <Page Include="LoadingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Controls\Block.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MVVM\Controls\LoadingAnimation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\NewMainWindow.xaml">
       <SubType>Designer</SubType>
@@ -341,7 +360,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\2009-12-26_231049.ico" />
     <Resource Include="Resources\icon-disable-all.png" />
     <Resource Include="Resources\Wrench_Outline_Icon_clip_art_small.png" />
     <Resource Include="Resources\xIcon.png" />
@@ -372,6 +390,7 @@
     <Content Include="lib\XmlConfig.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\cc-icon.ico" />
     <Resource Include="MVVM\skirmishSettingsBackup.txt" />
     <Resource Include="Resources\icon-add.png" />
     <Resource Include="Resources\icon-refresh.png" />
