@@ -1,0 +1,271 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:src="clr-namespace:CortexCommandModManager"
+                    xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.ModsTab"
+                    xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities">
+
+    <src:EnabledTextConverter x:Key="enabledTextConverter"/>
+    <src:ItemEnabledConverter x:Key="itemEnabledConverter"/>
+    <vm:ModListItemTemplateSelector x:Key="ModListItemTemplateSelector" />
+
+    <!-- Context menu for a preset mod item -->
+    <ContextMenu x:Key="presetModContextMenu">
+        <!--<MenuItem Header="Remove From Preset" Click="presetModContextMenu_Click"></MenuItem>-->
+    </ContextMenu>
+    
+    <Style x:Key="ModListItemContainerStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}" 
+                                      ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" 
+                                      ContentTemplateSelector="{TemplateBinding ContentControl.ContentTemplateSelector}"
+                                      ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <vms:Behaviors x:Key="ModListItemButtonBehaviors">
+        <vms:Behavior Event="MouseDoubleClick" Command="{Binding ToggleEnabledCommand}" />
+    </vms:Behaviors>
+
+    <Style TargetType="{x:Type ListView}" x:Key="ModListViewStyle">
+        <Setter Property="Margin" Value="16,6,18,83" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        
+        <Setter Property="ItemsSource" Value="{Binding Mods.View}" />
+        <Setter Property="ItemTemplateSelector" Value="{StaticResource ModListItemTemplateSelector}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ModListItemContainerStyle}" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListView}">
+                    <Border BorderThickness="1" BorderBrush="Silver" Background="White">
+                        <ScrollViewer Focusable="False">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for the colorization of each mod item. -->
+    <Style TargetType="{x:Type Button}" x:Key="ModListItemButtonStyle">
+        
+        <Setter Property="vms:Attached.Behaviors" Value="{StaticResource ModListItemButtonBehaviors}" />
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+        <!-- Default border - disabled and mouse not over -->
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#A1C2F0" Offset="0" />
+                    <GradientStop Color="#C0DBFF" Offset="0.5" />
+                    <GradientStop Color="#A1C2F0" Offset="1" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="BorderThickness" Value="1" />
+        
+        <Style.Triggers>
+            
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="BorderBrush" Value="Black" />
+            </Trigger>
+            
+            <!-- Condition for when the item is enabled and the mouse is not over. -->
+            <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#9FE3AC" Offset="0" />
+                            <GradientStop Color="#B0F7BD" Offset="0.5" />
+                            <GradientStop Color="#9FE3AC" Offset="1" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+            
+            <!-- Condition for when the mouse is over and the item is disabled. -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#C0DBFF" Offset="0" />
+                            <GradientStop Color="#A1C2F0" Offset="0.5" />
+                            <GradientStop Color="#C0DBFF" Offset="1" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            
+            <!-- Condition for when the mouse is over and the item is enabled. -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                    <Condition Binding="{Binding IsEnabled}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#B0F7BD" Offset="0" />
+                            <GradientStop Color="#9FE3AC" Offset="0.5" />
+                            <GradientStop Color="#B0F7BD" Offset="1" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            
+        </Style.Triggers>
+    </Style>
+
+    <!-- Style for the enabled/disabled texts for a textblock for a mod item. -->
+    <Style TargetType="{x:Type TextBlock}" x:Key="ModListItemEnabledStyle">
+        <Setter Property="Text" Value="Disabled" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                <Setter Property="Text" Value="Enabled" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- Context menu for a mod item. -->
+    <ContextMenu x:Key="ModItemContextMenu">
+        <!-- Enable/Disable Item -->
+        <MenuItem Command="{Binding ToggleEnabledCommand}">
+            <MenuItem.Style>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Header" Value="Enable" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                            <Setter Property="Header" Value="Disable" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </MenuItem.Style>
+        </MenuItem>
+        
+        <Separator />
+        
+        <MenuItem Header="Delete Mod" Command="{Binding DeleteModCommand}" />
+        
+        <Separator />
+        
+        <MenuItem Header="Add To Preset" ItemsSource="{Binding PresetsCanBeAddedTo}">
+            <MenuItem.Style>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding PresetsCanBeAddedTo.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </MenuItem.Style>
+        </MenuItem>
+        
+        <MenuItem Header="New Preset..." Command="{Binding NewPresetForModCommand}" />
+    </ContextMenu>
+
+    <!-- Data template for a mod item -->
+    <DataTemplate x:Key="ModItemTemplate" DataType="{x:Type vm:ModListItemViewModel}">
+        <Button Style="{StaticResource ModListItemButtonStyle}" ContextMenu="{StaticResource ModItemContextMenu}" >
+            
+            <Grid>
+                <StackPanel Orientation="Horizontal" Height="30">
+                    <Image Source="{Binding Icon}" VerticalAlignment="Center" Width="16" Margin="10,0,30,0" />
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="Black"  />
+                </StackPanel>
+
+                <TextBlock FontWeight="SemiBold" Margin="0,0,50,0" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Style="{StaticResource ModListItemEnabledStyle}" />
+            </Grid>
+            
+        </Button>
+
+    </DataTemplate>
+
+    <!-- Style for a preset item -->
+    <Style x:Key="presetModListViewItemStyle" TargetType="{x:Type ListViewItem}">
+        <!--<EventSetter Event="PreviewMouseRightButtonDown" Handler="presetModContextMenu_Click"/>-->
+    </Style>
+
+    <!-- Data template for viewing mods in a preset.-->
+    <DataTemplate DataType="{x:Type vm:ModViewModel}" x:Key="PresetModItemTemplate">
+        <TextBlock Text="{Binding Folder}"/>
+    </DataTemplate>
+    
+    <!-- Context menu for a preset. -->
+    <ContextMenu x:Key="PresetItemContextMenu">
+        
+        <!-- Enable/Disable Item -->
+        <MenuItem Command="{Binding ToggleEnabledCommand}">
+            <MenuItem.Style>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Header" Value="Enable" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                            <Setter Property="Header" Value="Disable" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </MenuItem.Style>
+        </MenuItem>
+
+        <Separator />
+        
+        <MenuItem Header="Rename..." Command="{Binding RenameCommand}" />
+        
+        <Separator />
+        
+        <MenuItem Header="Disband" Command="{Binding DisbandCommand}" />
+        
+    </ContextMenu>
+
+    <!-- Data template for a preset item -->
+    <DataTemplate x:Key="PresetItemTemplate" DataType="{x:Type vm:PresetViewModel}">
+        <Button Style="{StaticResource ModListItemButtonStyle}" ContextMenu="{StaticResource PresetItemContextMenu}">
+            <Grid>
+                <Expander HorizontalAlignment="Left" Margin="20,5,20,0">
+                    <Expander.Style>
+                        <Style TargetType="{x:Type Expander}">
+                            <Style.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter Property="Margin" Value="20,14,20,20"/>
+                                    <Setter Property="Width" Value="300"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Expander.Style>
+                    
+                    <ListView Background="Transparent" BorderThickness="0" 
+                              ItemsSource="{Binding Mods}"
+                              ItemContainerStyle="{StaticResource presetModListViewItemStyle}"
+                              ItemTemplate="{StaticResource PresetModItemTemplate}" />
+                </Expander>
+                
+                <StackPanel Orientation="Horizontal" MinHeight="30" VerticalAlignment="Top">
+                    <TextBlock Text="{Binding ModCount}" Margin="45,7,30,0" FontWeight="Bold" Foreground="Black" />
+                    <TextBlock Text="{Binding Name}" Foreground="Black" Margin="0,7,0,0"/>
+                </StackPanel>
+
+                <TextBlock Style="{StaticResource ModListItemEnabledStyle}" Foreground="Black" FontWeight="SemiBold" Margin="0,7,50,0" HorizontalAlignment="Right" />
+            </Grid>
+        </Button>
+    </DataTemplate>
+    
+</ResourceDictionary>

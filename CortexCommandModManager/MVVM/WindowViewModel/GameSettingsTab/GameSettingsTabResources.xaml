@@ -1,0 +1,77 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gsvm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.GameSettingsTab"
+                    xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+                    xmlns:windows="clr-namespace:System.Windows;assembly=PresentationCore">
+
+    <Style TargetType="{x:Type TabItem}" x:Key="GameSettingsTabItemStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border BorderBrush="Silver" BorderThickness="1,1,0,1" CornerRadius="0,0,0,12" Padding="5" Margin="0,-3,0,0" Name="Border" Background="{DynamicResource LightBrush}" >
+                        <Grid>
+                            <ContentPresenter Margin="5,0,0,0" ContentSource="Header" />
+                            <Ellipse HorizontalAlignment="Right" Width="5" Height="5" Fill="DimGray" Name="CurrentIndicator" Visibility="Collapsed" />
+                        </Grid>
+
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="White" />
+                            <Setter TargetName="Border" Property="Panel.ZIndex" Value="10" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="DimGray" />
+                            <Setter TargetName="CurrentIndicator" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Gray" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TabControl}" x:Key="GameSettingsTabControlStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="Silver" Background="White">
+                            <StackPanel Orientation="Vertical" IsItemsHost="True" Width="140" />
+                        </Border>
+                        <Border Margin="10">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                        </Border>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource GameSettingsTabItemStyle}" />
+    </Style>
+    
+    <Style TargetType="{x:Type HeaderedContentControl}" x:Key="GameSettingsContentControlStyle">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
+                    <StackPanel Orientation="Vertical">
+                        <Grid Height="50">
+                            <Grid.Resources>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                </Style>
+                            </Grid.Resources>
+                            <TextBlock Text="{TemplateBinding HeaderedContentControl.Header}" 
+                                       Margin="10,0,150,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" 
+                                       TextWrapping="Wrap" />
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" Width="200" Margin="10,10,10,10" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Separator Name="ItemSeparator" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

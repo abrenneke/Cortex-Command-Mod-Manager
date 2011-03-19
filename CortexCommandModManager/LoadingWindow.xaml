@@ -1,0 +1,11 @@
+﻿<Window x:Class="CortexCommandModManager.LoadingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LoadingWindow" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Width="244" Height="178">
+    <Border BorderBrush="LightGray" BorderThickness="1.5" Background="White">
+        <Grid>
+            <Label Content="Loading..." FontSize="40" VerticalContentAlignment="Center" 
+               HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+        </Grid>
+    </Border>
+</Window>

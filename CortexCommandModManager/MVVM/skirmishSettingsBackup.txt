@@ -1,0 +1,72 @@
+﻿ <!-- Skirmish Settings Tab -->
+            <TabItem Header="Game Settings" DataContext="{Binding SettingsTabViewModel}" Name="GameSettingsTab"
+                     xmlns:gsvm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.GameSettingsTab">
+                <TabItem.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="WindowViewModel/GameSettingsTab/GameSettingsTabResources.xaml" />
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </TabItem.Resources>
+
+                <Grid>
+                    <TabControl Style="{StaticResource GameSettingsTabControlStyle}">
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type HeaderedContentControl}" BasedOn="{StaticResource GameSettingsContentControlStyle}" />
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="FontSize" Value="16" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                            </Style>
+                        </TabControl.Resources>
+                        <TabItem Header="Game Settings">
+                            <StackPanel>
+                                
+                                <HeaderedContentControl Header="Game Resolution">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding Settings.GameXResolution}" Width="85" />
+                                        <TextBlock Text="X" Width="20" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" />
+                                        <TextBox Text="{Binding Settings.GameYResolution}" Width="85" />
+                                    </StackPanel>
+                                </HeaderedContentControl>
+                                
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Custom Skirmish">
+                            <StackPanel>
+                                <HeaderedContentControl Header="Player 1 Starting Gold (oz)">
+                                    <TextBox Text="{Binding Settings.Player1StartingGold}" />
+                                </HeaderedContentControl>
+
+                                <HeaderedContentControl Header="Player 2 Starting Gold (oz)">
+                                    <TextBox Text="{Binding Settings.Player2StartingGold}" />
+                                </HeaderedContentControl>
+
+                                <HeaderedContentControl Header="Lowest Enemy Spawn Rate (ms)">
+                                    <TextBox Text="{Binding Settings.EasiestEnemySpawnRate}" />
+                                </HeaderedContentControl>
+
+                                <HeaderedContentControl Header="Highest Enemy Spawn Rate (ms)">
+                                    <TextBox Text="{Binding Settings.HardestEnemySpawnRate}" />
+                                </HeaderedContentControl>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                    <!--<ListBox Style="{StaticResource GameSettingsCategories}" Name="GameSettingsCategories">
+                        <ListBox.Items>
+                            <gsvm:SettingGroup Header="Game Settings">
+                                <gsvm:GameSetting Header="X Resolution">
+                                    <TextBox Text="{Binding Settings.GameXResolution}" />
+                                </gsvm:GameSetting>
+                            </gsvm:SettingGroup>
+                        </ListBox.Items>
+                    </ListBox>
+                    <ItemsControl ItemsSource="{Binding SelectedItem.Settings, ElementName=GameSettingsCategories}" Name="SettingsArea" Margin="152,6,6,6">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type gsvm:GameSetting}">
+                                <TextBlock Text="foo" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>-->
+                </Grid>
+                
+            </TabItem>

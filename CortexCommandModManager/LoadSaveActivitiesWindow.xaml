@@ -1,0 +1,63 @@
+﻿<Window x:Class="CortexCommandModManager.LoadSaveActivitiesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:CortexCommandModManager"
+        xmlns:act="clr-namespace:CortexCommandModManager.Activities"
+        xmlns:conv="clr-namespace:CortexCommandModManager.Converters"
+        Title="Load Activity" Height="289" Width="344" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" ShowInTaskbar="False">
+    <Window.Resources>
+        <conv:ActivityDescriptionConverter x:Key="activityDescriptionConverter"/>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Border BorderBrush="Gray" BorderThickness="1" Height="248" HorizontalAlignment="Left" Name="border1" VerticalAlignment="Top" Width="312">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="LightGray" Offset="0"/>
+                <GradientStop Color="White" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
+            <ListView Height="233" HorizontalAlignment="Left" Margin="9,7,0,0" Name="activitiesList" VerticalAlignment="Top" Width="173" 
+                      SelectionChanged="activitiesList_SelectionChanged" IsSynchronizedWithCurrentItem="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type act:Activity}">
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Resources>
+                    <ContextMenu x:Key="activityContextMenu">
+                        <MenuItem Header="Delete" Name="menuDeleteActivity" Click="menuDeleteActivity_Click"/>
+                    </ContextMenu>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="ContextMenu" Value="{StaticResource activityContextMenu}"></Setter>
+                    </Style>
+                </ListView.Resources>
+            </ListView>
+            <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="245,217,0,0" Name="btnSaveCurrent" VerticalAlignment="Top" Width="52" Click="btnSaveCurrent_Click" />
+            <Border Background="White" BorderBrush="Gray" BorderThickness="1" Height="204" HorizontalAlignment="Left" Margin="189,7,0,0" Name="textBlock1" VerticalAlignment="Top" Width="110">
+                <TextBlock Text="{Binding ElementName=activitiesList, Path=SelectedItem.Description, Converter={StaticResource activityDescriptionConverter}}" TextWrapping="Wrap" Padding="5" />
+            </Border>
+            <Button Content="New" Height="23" HorizontalAlignment="Left" Margin="190,217,0,0" Name="btnNewActivity" VerticalAlignment="Top" Width="49" Click="btnNewActivity_Click" />
+        </Grid>
+    </Border>
+</Window>

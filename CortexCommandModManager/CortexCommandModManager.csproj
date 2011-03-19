@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5AB75C94-793B-47AD-A6B8-D7AFDC731DF7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CortexCommandModManager</RootNamespace>
+    <AssemblyName>CortexCommandModManager</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="MoreLinq, Version=1.0.11522.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MoreLinq.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\SevenZipSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="XmlConfig, Version=2.0.3814.22975, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\XmlConfig.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Activities\ActivityFileReader.cs" />
+    <Compile Include="Activities\ActivityItem.cs" />
+    <Compile Include="Activities\ActivityItemCache.cs" />
+    <Compile Include="Activities\ModActivityItemsLoader.cs" />
+    <Compile Include="Activities\ActivityItemLoaderWindow.xaml.cs">
+      <DependentUpon>ActivityItemLoaderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Activities\ActivityItemWindow.xaml.cs">
+      <DependentUpon>ActivityItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Activities\ActivityLoader.cs" />
+    <Compile Include="Activities\ActivitySaver.cs" />
+    <Compile Include="Activities\RandomSettings.cs" />
+    <Compile Include="AddSkirmishItem.xaml.cs">
+      <DependentUpon>AddSkirmishItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes\NotifyPropertyChanged.cs" />
+    <Compile Include="BackupSaver.cs" />
+    <Compile Include="Converters\ActivityDescriptionConverter.cs" />
+    <Compile Include="Converters\ModNameConverter.cs" />
+    <Compile Include="Converters\SkirmishItemImageConverter.cs" />
+    <Compile Include="Converters\ModFolderConverter.cs" />
+    <Compile Include="CortexCommand.cs" />
+    <Compile Include="DefaultWeapons.cs" />
+    <Compile Include="ErrorWindow.xaml.cs">
+      <DependentUpon>ErrorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\ActivityLoadException.cs" />
+    <Compile Include="Exceptions\IncorrectInstallationException.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="GameSettingsManager.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="IniFileBuilder.cs" />
+    <Compile Include="LoadingWindow.xaml.cs">
+      <DependentUpon>LoadingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoadSaveActivitiesWindow.xaml.cs">
+      <DependentUpon>LoadSaveActivitiesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModEntities.cs" />
+    <Compile Include="ModExtracter.cs" />
+    <Compile Include="ModListFilterer.cs" />
+    <Compile Include="Exceptions\IncorrectCCMMFileTypeException.cs" />
+    <Compile Include="MVVM\Native\MARGINS.cs" />
+    <Compile Include="MVVM\Native\NativeWindow.cs" />
+    <Compile Include="MVVM\NewMainWindow.xaml.cs">
+      <DependentUpon>NewMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Utilities\Attached.cs" />
+    <Compile Include="MVVM\Utilities\Behavior.cs" />
+    <Compile Include="MVVM\Utilities\Behaviors.cs" />
+    <Compile Include="MVVM\Utilities\Command.cs" />
+    <Compile Include="MVVM\Utilities\CommandBehavior.cs" />
+    <Compile Include="MVVM\Utilities\CommandExtensions.cs" />
+    <Compile Include="MVVM\Utilities\DependencyObjectExtensions.cs" />
+    <Compile Include="MVVM\Utilities\ElementHelper.cs" />
+    <Compile Include="MVVM\Utilities\EventHandlerGenerator.cs" />
+    <Compile Include="MVVM\Utilities\IInitializable.cs" />
+    <Compile Include="MVVM\Utilities\IViewModel.cs" />
+    <Compile Include="MVVM\Utilities\ViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\GameSettingsTab\GameSettings.cs" />
+    <Compile Include="MVVM\WindowViewModel\Menu\MenuIcons.cs" />
+    <Compile Include="MVVM\WindowViewModel\Menu\MenuViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\ModListItemTemplateSelector.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\ModListItemViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\ModsTabIcons.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\ModViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\PresetViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\NewMainWindowViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ModsTab\ModsTabViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\GameSettingsTab\SettingsTabViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\Resource.cs" />
+    <Compile Include="MVVM\WindowViewModel\SkirmishesViewModel.cs" />
+    <Compile Include="PreinstalledMods.cs" />
+    <Compile Include="Preset.cs" />
+    <Compile Include="Activities\RandomSettingsWindow.xaml.cs">
+      <DependentUpon>RandomSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsObject.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SkirmishSettingsManager.cs" />
+    <Compile Include="SkirmishWave.cs" />
+    <Compile Include="EnhancedSkirmish.cs" />
+    <Compile Include="SkirmishWavesScanner.cs" />
+    <Compile Include="Startup\AssemblyResolver.cs" />
+    <Compile Include="Startup\AssemblyResolverConfiguration.cs" />
+    <Compile Include="Startup\CCMMInitialization.cs" />
+    <Compile Include="Startup\CCMMInitializer.cs" />
+    <Compile Include="Startup\CortexCommandInitializer.cs" />
+    <Compile Include="Startup\DefaultAssemblyConfiguration.cs" />
+    <Compile Include="Startup\ProgramElevator.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Validators\SettingsValidNumeral.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Activities\ActivityItemLoaderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Activities\ActivityItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPresetWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddSkirmishItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Activities\RandomSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoadingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\NewMainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\NewMainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\StandardWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\WindowViewModel\GameSettingsTab\GameSettingsTabResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\WindowViewModel\ModsTab\ModsTabResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RenamePresetWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ErrorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoadSaveActivitiesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Converters\BitmapConverter.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Converters\EnabledTextConverter.cs" />
+    <Compile Include="Grabber.cs" />
+    <Compile Include="Converters\ItemEnabledConverter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddPresetWindow.xaml.cs">
+      <DependentUpon>AddPresetWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\ModListTemplateSelector.cs" />
+    <Compile Include="RenamePresetWindow.xaml.cs">
+      <DependentUpon>RenamePresetWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Mod.cs" />
+    <Compile Include="ModComparer.cs" />
+    <Compile Include="Exceptions\ModLockedException.cs" />
+    <Compile Include="IModListItem.cs" />
+    <Compile Include="ModManager.cs" />
+    <Compile Include="ModScanner.cs" />
+    <Compile Include="PresetManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="IniSettingFile.cs" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\2009-12-26_231049.ico" />
+    <Resource Include="Resources\icon-disable-all.png" />
+    <Resource Include="Resources\Wrench_Outline_Icon_clip_art_small.png" />
+    <Resource Include="Resources\xIcon.png" />
+    <Resource Include="WaveIcons\ACDropShip.png" />
+    <Resource Include="WaveIcons\ACrab.png" />
+    <Resource Include="WaveIcons\ACRocket.png" />
+    <Resource Include="WaveIcons\AHuman.png" />
+    <Resource Include="WaveIcons\HDFirearm.png" />
+    <Resource Include="WaveIcons\HeldDevice.png" />
+    <Resource Include="WaveIcons\TDExplosive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\7z64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\MoreLinq.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\SevenZipSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\XmlConfig.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="MVVM\skirmishSettingsBackup.txt" />
+    <Resource Include="Resources\icon-add.png" />
+    <Resource Include="Resources\icon-refresh.png" />
+    <Resource Include="Resources\icon-enable-all.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

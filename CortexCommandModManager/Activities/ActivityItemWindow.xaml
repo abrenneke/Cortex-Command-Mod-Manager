@@ -1,0 +1,152 @@
+﻿<Window x:Class="CortexCommandModManager.ActivityItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:act="clr-namespace:CortexCommandModManager.Activities"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:converter="clr-namespace:CortexCommandModManager.Converters"
+        Title="Add Activity Item" Height="467" Width="697">
+    <Window.Resources>
+
+        <converter:ModNameConverter x:Key="modNameConverter"></converter:ModNameConverter>
+
+        <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+        
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid>
+                            <Border 
+            Name="Border"
+            Margin="0,0,-4,0" 
+            Background="{StaticResource LightBrush}"
+            BorderBrush="{StaticResource SolidBorderBrush}" 
+            BorderThickness="1,1,1,0" 
+            CornerRadius="2,12,0,0" >
+                                <ContentPresenter x:Name="ContentSite"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              ContentSource="Header"
+              Margin="12,2,12,2"
+              RecognizesAccessKey="True"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="activityItemTemplate" DataType="{x:Type act:ActivityItem}">
+            <Border BorderBrush="LightGray" BorderThickness="0 1 0 0">
+                <Grid HorizontalAlignment="Stretch">
+                    <Image Source="{Binding BitmapSource}" HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="None" Margin="0 14 0 0" />
+                    <TextBlock HorizontalAlignment="Left" Margin="50 0 0 0" Text="{Binding PresetName}" />
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding Description}" Width="300" TextWrapping="Wrap" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+        
+        <Style TargetType="{x:Type GroupItem}" x:Key="activityGroupStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                        <Expander IsExpanded="False">
+                            <Expander.Header>
+                                <TextBlock Text="{Binding Name}" />
+                            </Expander.Header>
+                            <Expander.Content>
+                                <ItemsPresenter />
+                            </Expander.Content>
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+        
+        <CollectionViewSource x:Key="weaponsSource">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Mod" Converter="{StaticResource modNameConverter}"  />
+            </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Mod" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        
+        <CollectionViewSource x:Key="actorsSource">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Mod" Converter="{StaticResource modNameConverter}" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+        
+        <CollectionViewSource x:Key="craftSource">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Mod" Converter="{StaticResource modNameConverter}"  />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+        
+    </Window.Resources>
+    <TabControl>
+        <TabItem Header="Weapons">
+            <ListView Name="weaponsListView" ItemTemplate="{StaticResource activityItemTemplate}" ItemsSource="{Binding Source={StaticResource weaponsSource}}" HorizontalContentAlignment="Stretch">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ItemListViewItemDoubleClick" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource activityGroupStyle}"></GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </TabItem>
+        <TabItem Header="Actors">
+            <ListView Name="actorsListView" ItemTemplate="{StaticResource activityItemTemplate}" ItemsSource="{Binding Source={StaticResource actorsSource}}" HorizontalContentAlignment="Stretch">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ItemListViewItemDoubleClick" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource activityGroupStyle}"></GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </TabItem>
+        <TabItem Header="Craft">
+            <ListView Name="craftListView" ItemTemplate="{StaticResource activityItemTemplate}" ItemsSource="{Binding Source={StaticResource craftSource}}" HorizontalContentAlignment="Stretch">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ItemListViewItemDoubleClick" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource activityGroupStyle}"></GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </TabItem>
+    </TabControl>
+</Window>

@@ -1,0 +1,35 @@
+﻿<Window x:Class="CortexCommandModManager.RenamePresetWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Rename Preset" Height="129" Width="387"
+    FocusManager.FocusedElement="{Binding ElementName=presetNameBox}" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Label Margin="10,13.52,169,0" Name="label1" Height="28" VerticalAlignment="Top">Enter a name for the preset:</Label>
+        <TextBox KeyDown="presetNameBox_KeyDown" Name="presetNameBox" Margin="16,46,14,0" Height="23" VerticalAlignment="Top" />
+        <Button Height="23" HorizontalAlignment="Left" Margin="276,15,0,0" Name="btnOK" VerticalAlignment="Top" Width="75" Click="btnOK_Click">OK</Button>
+        <Button Height="23" HorizontalAlignment="Left" Margin="200,15,0,0" VerticalAlignment="Top" Width="75" IsCancel="True">Cancel</Button>
+    </Grid>
+</Window>

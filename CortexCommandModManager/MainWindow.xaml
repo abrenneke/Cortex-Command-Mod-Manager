@@ -1,0 +1,360 @@
+﻿<Window x:Class="CortexCommandModManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:CortexCommandModManager"
+        xmlns:conv="clr-namespace:CortexCommandModManager.Converters"
+        Title="Cortex Command Mod Manager" Height="493" Width="459" LocationChanged="Window_LocationChanged" FrameworkElement.SizeChanged="Window_SizeChanged" Closing="Window_Closing"
+        MinWidth="440" MinHeight="380">
+    <Window.Resources>
+        <src:ItemEnabledConverter x:Key="itemEnabledConverter"/>
+        <src:EnabledTextConverter x:Key="enabledTextConverter"/>
+        <conv:SkirmishItemImageConverter x:Key="skirmishItemImageConverter"/>
+        <src:ModListTemplateSelector x:Key="modListTemplateSelector"/>
+        <CollectionViewSource x:Key="modsListSource"/>
+        
+        <Style x:Key="runCCButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#F1F4FB"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="12,0,0,12" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2,0,0,0" Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="modListItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="ModItem_DoubleClick"></EventSetter>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="ModItem_RightClick"></EventSetter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <ContextMenu x:Key="presetModContextMenu">
+            <MenuItem Header="Remove From Preset" Click="presetModContextMenu_Click"></MenuItem>
+        </ContextMenu>
+
+        <DataTemplate x:Key="modItemTemplate" DataType="{x:Type src:Mod}">
+            <Border BorderBrush="Gray" BorderThickness="1" Background="{Binding Enabled,Converter={StaticResource itemEnabledConverter}}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Height="50">
+                        <Image VerticalAlignment="Center" Width="16" Margin="10,0,30,0" Source="{Binding BitmapSource}"></Image>
+                        <TextBlock Text="{Binding Name}" Foreground="Black" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Enabled, Converter={StaticResource enabledTextConverter}}" Foreground="Black"
+                                                   FontWeight="SemiBold" Margin="0,0,50,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <Style x:Key="presetModListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="presetModContextMenu_Click"/>
+        </Style>
+
+        <DataTemplate x:Key="presetItemTemplate" DataType="{x:Type src:Preset}">
+            <Border BorderBrush="Gray" BorderThickness="1" Background="{Binding Enabled,Converter={StaticResource itemEnabledConverter}}">
+                <Grid>
+                    <Expander HorizontalAlignment="Left">
+                        <Expander.Style>
+                            <Style TargetType="{x:Type Expander}">
+                                <Setter Property="Margin" Value="20,14,20,0"/>
+                                <Setter Property="Width" Value="30"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsExpanded" Value="True">
+                                        <Setter Property="Margin" Value="20,14,20,20"/>
+                                        <Setter Property="Width" Value="300"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Expander.Style>
+                        <ListView ItemsSource="{Binding}" Background="Transparent" BorderThickness="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="{x:Type src:Mod}">
+                                    <TextBlock Text="{Binding Folder}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource presetModListViewItemStyle}"/>
+                            </ListView.Resources>
+                        </ListView>
+                    </Expander>
+                    <StackPanel Orientation="Horizontal" MinHeight="50" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding ModCount}" Margin="45,17,30,0" FontWeight="Bold" Foreground="Black" />
+                        <TextBlock Text="{Binding Name}" Foreground="Black" Margin="0,17,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Enabled, Converter={StaticResource enabledTextConverter}}" Foreground="Black"
+                                                   FontWeight="SemiBold" Margin="0,17,50,0" HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid>
+                            <Border 
+            Name="Border"
+            Margin="0,0,-4,0" 
+            Background="{StaticResource LightBrush}"
+            BorderBrush="{StaticResource SolidBorderBrush}" 
+            BorderThickness="1,1,1,0" 
+            CornerRadius="2,12,0,0" >
+                                <ContentPresenter x:Name="ContentSite"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              ContentSource="Header"
+              Margin="12,2,12,2"
+              RecognizesAccessKey="True"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border BorderBrush="DarkGray" BorderThickness="1">
+        <Grid>
+            <DockPanel Height="25" Margin="0,0,0,0" VerticalAlignment="Top">
+                <Border BorderBrush="DarkGray">
+                    <Border.BorderThickness>
+                        <Thickness Bottom="1" Top="0" Left="0" Right="0"/>
+                    </Border.BorderThickness>
+                    <Menu Background="#F1F4FB">
+                        <MenuItem Header="File">
+                            <MenuItem Name="Menu_File_Settings" Header="Settings" Click="Menu_File_Settings_Click">
+                                <MenuItem.Icon>
+                                    <Image Width="16" Height="16" Source="Wrench_Outline_Icon_clip_art_small.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Name="Menu_File_Exit" Header="Exit" Click="Menu_File_Exit_Click">
+                                <MenuItem.Icon>
+                                    <Image Width="16" Height="16" Source="xIcon.png"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="Help">
+                            <MenuItem Name="Menu_Help_About" Header="About" Click="Menu_Help_About_Click">
+                                <MenuItem.Icon>
+                                    <Image Width="16" Height="16" Source="2009-12-26_231049.ico"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+                </Border>
+            </DockPanel>
+            <Button Content="Run Cortex Command" FontSize="10" Name="btnRunGame" Width="113" Click="btnRunGame_Click" Margin="0,0,0,0" Height="24" 
+                    VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource runCCButtonStyle}" >
+            </Button>
+            <TabControl SelectedIndex="0" SelectionChanged="mainTabControl_SelectionChanged"  Name="mainTabControl" Margin="1,28,1,1" BorderThickness="0,1,0,0">
+                <TabItem Header="Enable/Disable Mods" Name="tabItem1">
+                    <Grid>
+                        
+                        <ListView Loaded="modsList_Loaded" Margin="16,6,18,83" Name="modsList" HorizontalContentAlignment="Stretch" 
+                                  ItemsSource="{Binding Source={StaticResource modsListSource}}" ItemTemplateSelector="{StaticResource modListTemplateSelector}">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource modListItemStyle}"/>
+                            </ListView.Resources>
+                        </ListView>
+                        
+                        <Button Content="Enable All Mods" Height="23" HorizontalAlignment="Left" Margin="16,0,0,48" Name="enableAllMods" VerticalAlignment="Bottom" Width="98" Click="enableAllMods_Click" />
+                        <Button Content="Disable All Mods" Height="23" Margin="120,0,0,48" Name="disableAllMods" VerticalAlignment="Bottom" Click="disableAllMods_Click" HorizontalAlignment="Left" Width="105" />
+                        <Label Content="Loading Mods..." Height="28" Margin="0,0,18,14" Name="loadingLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="95" />
+                        <Label Content="Show:" Height="28" HorizontalAlignment="Left" Margin="16,0,0,14" Name="label1" VerticalAlignment="Bottom" Width="48" />
+                        <CheckBox Content="Enabled" Height="16" HorizontalAlignment="Left" Margin="70,0,0,21" Name="showEnabledMods" VerticalAlignment="Bottom" Width="66" IsChecked="True" IsEnabled="True" Click="showEnabledMods_Click" />
+                        <CheckBox Content="Disabled" Height="16" Margin="142,0,0,21" Name="showDisabledMods" VerticalAlignment="Bottom" IsChecked="True" IsEnabled="True" Click="showDisabledMods_Click" HorizontalAlignment="Left" Width="73" />
+                        <Button Content="Refresh List" Height="23" HorizontalAlignment="Left" Margin="231,0,0,48" Name="btnRefreshModsList" VerticalAlignment="Bottom" Width="82" Click="btnRefreshModsList_Click" />
+                        <Button Content="Install Mod(s)" HorizontalAlignment="Left" Margin="319,0,0,48" Name="btnInstallMods" Width="88" Click="btnInstallMods_Click" Height="23" VerticalAlignment="Bottom" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Global Skirmish Settings" DataContext="{StaticResource skirmishBasicSettings}">
+                    <Grid>
+                        <Button Content="Save Settings" Height="23" HorizontalAlignment="Left" Margin="6,9,0,0" Name="btnSaveSkirmishSettings" VerticalAlignment="Top" Width="120" Click="btnSaveSkirmishSettings_Click" />
+                        <GroupBox Header="Gold" Margin="6,38.92,12,0" Name="groupBox1" Height="104" VerticalAlignment="Top">
+                            <Grid>
+                                <Label Content="Player 1 Starting Gold:" HorizontalAlignment="Left" Width="152" Height="29" VerticalAlignment="Top" Margin="14,8,0,0" />
+                                <TextBox HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Name="p1InitialGoldBox" Width="152" HorizontalAlignment="Left" Margin="14,40,0,15">
+                                    <TextBox.Text>
+                                        <Binding Path="Player1Gold" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <Label Content="Player 2 Starting Gold:" Height="25.96" HorizontalAlignment="Left" Margin="218.293,8,0,0" VerticalAlignment="Top" Width="146.414" />
+                                <TextBox HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Name="p2InitialGoldBox" Margin="218.293,40.08,0,15" HorizontalAlignment="Left" Width="146.414">
+                                    <TextBox.Text>
+                                        <Binding Path="Player2Gold" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <Label Content="oz" HorizontalAlignment="Left" Margin="167,40,0,15.08" Width="22.457" />
+                                <Label Content="oz" HorizontalAlignment="Left" Margin="362.543,40,0,15.08" Width="22.457" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Spawn Interval" Margin="6,154,12,0" Name="groupBox2" Height="119.04" VerticalAlignment="Top">
+                            <Grid>
+                                <Label Content="Easiest Difficulty:" Margin="14,15,0,0" HorizontalAlignment="Left" Width="100" Height="30" VerticalAlignment="Top" />
+                                <TextBox VerticalContentAlignment="Center" Name="easiestInterval" Width="152" Height="26" HorizontalAlignment="Left" 
+                             HorizontalContentAlignment="Right" Margin="14,0,0,20" VerticalAlignment="Bottom">
+                                    <TextBox.Text>
+                                        <Binding Path="SpawnIntervalEasiest" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <Label Content="Hardest Difficulty:" Height="25.96" Margin="218.293,15,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="128.38" />
+                                <TextBox VerticalContentAlignment="Center" Name="hardestInterval" Margin="218.293,0,0,20" Height="26.04" VerticalAlignment="Bottom" 
+                             HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="146.707">
+                                    <TextBox.Text>
+                                        <Binding Path="SpawnIntervalHardest" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <Label Height="28" Margin="167,0,0,17.96" Name="label5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="27">ms</Label>
+                                <Label Height="28" HorizontalAlignment="Left" Margin="362.543,0,0,17.96" Name="label6" VerticalAlignment="Bottom" Width="27">ms</Label>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Game Settings" Height="109" Margin="6,276,12,0" Name="groupBox3" VerticalAlignment="Top">
+                            <Grid>
+                                <Label Content="Resolution:" Height="28" HorizontalAlignment="Left" Margin="6,11,0,0" Name="label7" VerticalAlignment="Top" Width="82" />
+                                <TextBox Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="99,12,0,0" Name="gameResolutionXBox" VerticalAlignment="Top" Width="107">
+                                    <TextBox.Text>
+                                        <Binding Path="ResolutionX" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <Label Content="x" Height="28" HorizontalAlignment="Left" Margin="214,10,0,0" Name="label8" VerticalAlignment="Top" />
+                                <TextBox Height="26" HorizontalAlignment="Left" Margin="236,13,0,0" Name="gameResolutionYBox" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Right" >
+                                    <TextBox.Text>
+                                        <Binding Path="ResolutionY" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <src:SettingsValidNumeral />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <CheckBox Content="Full Screen" Height="21" HorizontalAlignment="Left" Margin="99,50,0,0" Name="gameFullScreenCheckBox" VerticalAlignment="Top" Width="84" IsChecked="{Binding Fullscreen}" />
+                            </Grid>
+                        </GroupBox>
+                        <TextBlock Height="44" Margin="136,2,12,0" Name="textBlock1" Text="Gold and spawn interval are only applicable to Custom Defense." TextWrapping="Wrap" Padding="5" VerticalAlignment="Top" Width="277" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Skirmish Waves">
+                    <TabItem.Resources>
+                        <ContextMenu x:Key="inventoryItemsContextMenu">
+                            <MenuItem Name="skirmishWavesTreeViewItem_Add" Header="Add To" Click="skirmishWavesTreeViewItem_Add_Click"/>
+                            <MenuItem Name="skirmishWavesTreeViewItem_Duplicate" Header="Duplicate" Click="skirmishWavesTreeViewItem_Duplicate_Click"/>
+                            <MenuItem Name="skirmishWavesTreeViewItem_Delete" Header="Delete" Click="skirmishWavesTreeViewItem_Delete_Click"/>
+                            <Separator />
+                            <MenuItem Name="skirmishWavesTreeViewItem_Random" Header="Random Skirmish" Click="skirmishWavesTreeViewItem_Random_Click"/>
+                        </ContextMenu>
+                    </TabItem.Resources>
+                    <Grid>
+                        <TreeView Margin="6,40,11,39" Name="skirmishWavesTreeView">
+                            <TreeView.Resources>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <EventSetter Event="KeyDown" Handler="skirmishWavesTreeViewItem_KeyDown"/>
+                                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="skirmishWavesTreeViewItem_PreviewMouseRightButtonDown"/>
+                                    <Setter Property="ContextMenu" Value="{StaticResource inventoryItemsContextMenu}"/>
+                                </Style>
+                                <HierarchicalDataTemplate DataType="{x:Type src:InventoryItem}" ItemsSource="{Binding SubItems}">
+                                    <StackPanel Height="16" Orientation="Horizontal">
+                                        <Image Margin="0,0,10,0" Source="{Binding Name, Converter={StaticResource skirmishItemImageConverter}}"/>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding CopyOf}"/>
+                                        <TextBlock VerticalAlignment="Center" Text=" ("/>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                                        <TextBlock VerticalAlignment="Center" Text=")"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                        <Label Content="Title:" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label3" VerticalAlignment="Top" Width="47" />
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="61,8,0,0" Name="actTitleBox" VerticalAlignment="Top" Width="139" LostFocus="actTitleBox_LostFocus" />
+                        <Label Content="Description:" Height="28" HorizontalAlignment="Left" Margin="293,6,0,0" Name="label2" VerticalAlignment="Top" Width="73" />
+                        <Button Content="˅" Height="18" HorizontalAlignment="Left" Margin="371,11,0,0" Name="btnShowDescription" VerticalAlignment="Top" Width="15" FontSize="10" Click="btnShowDescription_Click" />
+                        <Border Padding="5" Background="White" CornerRadius="5" BorderBrush="Silver" BorderThickness="1" Height="100" Margin="223,31,0,0" Name="waveDescriptionBox" VerticalAlignment="Top" Panel.ZIndex="1" Visibility="Hidden" HorizontalAlignment="Left" Width="200">
+                            <TextBox BorderBrush="Transparent" BorderThickness="0" Name="actDescriptionBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" LostFocus="actDescriptionBox_LostFocus"></TextBox>
+                        </Border>
+                        <Label Content="Load/Save Activities:" Height="28" HorizontalAlignment="Right" Margin="0,0,41,6" Name="label4" VerticalAlignment="Bottom" Width="120" />
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,11,9" Name="btnOpenActivitesWindow" VerticalAlignment="Bottom" Width="25" FontSize="18" Click="btnOpenActivitesWindow_Click">
+                            <Button.Content>
+                                <TextBlock Margin="0,-5,0,0">»</TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>

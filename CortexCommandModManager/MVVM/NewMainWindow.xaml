@@ -1,0 +1,174 @@
+﻿<Window x:Class="CortexCommandModManager.MVVM.NewMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:CortexCommandModManager"
+        xmlns:conv="clr-namespace:CortexCommandModManager.Converters"
+        xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.Utilities"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        
+        Width="{Binding WindowWidth, Mode=TwoWay}" MinWidth="440"
+        Height="{Binding WindowHeight, Mode=TwoWay}" MinHeight="380"
+        
+        Title="Cortex Command Mod Manager" 
+        Closing="Window_Closing" Loaded="Window_Loaded"
+        d:DesignWidth="624" d:DesignHeight="624">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StandardWindowResources.xaml" />
+                <ResourceDictionary Source="NewMainWindowResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Main Menu -->
+        <DockPanel Height="25" VerticalAlignment="Top" DataContext="{Binding MenuViewModel}">
+            <Border BorderBrush="DarkGray" BorderThickness="0,0,0,0">
+                <Menu HorizontalAlignment="Left" Background="Transparent">
+                    
+                    <MenuItem Header="File">
+                        <MenuItem Header="Settings" Icon="{Binding Icons.File_Settings}" />
+                        <MenuItem Header="Exit" Icon="{Binding Icons.File_Exit}" />
+                    </MenuItem>
+                    
+                    <MenuItem Header="Help">
+                        <MenuItem Header="About" Icon="{Binding Icons.Help_About}" />
+                    </MenuItem>
+                    
+                </Menu>
+            </Border>
+        </DockPanel>
+
+        <!-- Run Cortex Command Box -->
+        <Button Content="Run Cortex Command" FontSize="10" Width="113" Margin="0,0,0,0" Height="24" 
+                VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource runCCButtonStyle}" >
+        </Button>
+
+        <!-- Main Tab Holder -->
+        <TabControl SelectedIndex="0" Margin="0,28,0,0" BorderThickness="0,1,0,0">
+            
+            <!-- Mods Tab -->
+            <TabItem Header="Mods" DataContext="{Binding ModsTabViewModel}" 
+                     xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.ModsTab"
+                     xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities">
+                <TabItem.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="WindowViewModel/ModsTab/ModsTabResources.xaml" />
+                            <ResourceDictionary>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ResourceKey={x:Type Button}}" x:Key="modTabButtonStyle">
+                                    <Setter Property="Height" Value="23" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                                </Style>
+                            </ResourceDictionary>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </TabItem.Resources>
+                <DockPanel>
+                    <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
+
+                        <ToolBar>
+                            <Button Command="{Binding EnableAllModsCommand}" ToolTip="Enable All Mods">
+                                <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-enable-all.png" Width="16" Height="16" />
+                            </Button>
+                            <Button Command="{Binding DisableAllModsCommand}" ToolTip="Disable All Mods">
+                                <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-disable-all.png" Width="16" Height="16" />
+                            </Button>
+                        </ToolBar>
+
+                        <ToolBar>
+                            <Button Command="{Binding RefreshListCommand}" ToolTip="Refresh List">
+                                <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-refresh.png" Width="16" Height="16" />
+                            </Button>
+                            <Button Command="{Binding InstallModCommand}" ToolTip="Install Mod(s)">
+                                <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-add.png" Width="16" Height="16" />
+                            </Button>
+                        </ToolBar>
+
+                        <ToolBar>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="Show Enabled"  IsChecked="{Binding ShowEnabledMods}"  Command="{Binding UpdateFiltersCommand}" VerticalAlignment="Center" Margin="5,0,5,0" />
+                                <CheckBox Content="Show Disabled" IsChecked="{Binding ShowDisabledMods}" Command="{Binding UpdateFiltersCommand}" VerticalAlignment="Center" Margin="5,0,5,0" />
+                            </StackPanel>
+                        </ToolBar>
+
+                    </ToolBarTray>
+
+                    <!-- Main Mod List List View-->
+                    <ListView Style="{StaticResource ModListViewStyle}" Margin="0" />
+                </DockPanel>
+            </TabItem>
+            
+            <!-- Browse Mogs Tab -->
+            <TabItem Header="Browse Mods">
+                
+            </TabItem>
+
+           
+
+            <TabItem Header="Custom Skirmish Waves">
+
+                <TabItem.Resources>
+                    <ContextMenu x:Key="inventoryItemsContextMenu">
+                        <MenuItem Header="Add To" />
+                        <MenuItem Header="Duplicate" />
+                        <MenuItem Header="Delete" />
+                        <Separator />
+                        <MenuItem Header="Random Skirmish" />
+                    </ContextMenu>
+                </TabItem.Resources>
+
+                <Grid>
+
+                    <!-- Skirmish Waves Tree View -->
+                    <TreeView Margin="6,40,11,39">
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <!--<EventSetter Event="KeyDown"/>
+                                <EventSetter Event="PreviewMouseRightButtonDown"/>-->
+                                <Setter Property="ContextMenu" Value="{StaticResource inventoryItemsContextMenu}"/>
+                            </Style>
+                            <HierarchicalDataTemplate DataType="{x:Type src:InventoryItem}" ItemsSource="{Binding SubItems}">
+                                <StackPanel Height="16" Orientation="Horizontal">
+                                    <Image Margin="0,0,10,0" Source="{Binding Name, Converter={StaticResource skirmishItemImageConverter}}"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding CopyOf}"/>
+                                    <TextBlock VerticalAlignment="Center" Text=" ("/>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                                    <TextBlock VerticalAlignment="Center" Text=")"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+
+                    <!-- Top area of Skirmish Waves -->
+                    <Label Content="Title:" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="47" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="61,8,0,0" VerticalAlignment="Top" Width="139" />
+                    <Label Content="Description:" Height="28" HorizontalAlignment="Left" Margin="293,6,0,0" VerticalAlignment="Top" Width="73" />
+                    <Button Content="v" Height="18" HorizontalAlignment="Left" Margin="371,11,0,0" VerticalAlignment="Top" Width="15" FontSize="10" />
+
+                    <Border Padding="5" Background="White" CornerRadius="5" BorderBrush="Silver" BorderThickness="1" Height="100" 
+                            Margin="223,31,0,0" VerticalAlignment="Top" Panel.ZIndex="1" Visibility="Hidden" HorizontalAlignment="Left" Width="200">
+                        <TextBox BorderBrush="Transparent" BorderThickness="0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" ></TextBox>
+                    </Border>
+
+                    <Label Content="Load/Save Activities:" Height="28" HorizontalAlignment="Right" Margin="0,0,41,6" VerticalAlignment="Bottom" Width="120" />
+
+                    <!-- Button to open the activities window. -->
+                    <Button Height="23" HorizontalAlignment="Right" Margin="0,0,11,9" VerticalAlignment="Bottom" Width="25" FontSize="18">
+                        <Button.Content>
+                            <TextBlock Margin="0,-5,0,0">»</TextBlock>
+                        </Button.Content>
+                    </Button>
+
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Window>

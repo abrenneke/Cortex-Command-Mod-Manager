@@ -1,0 +1,42 @@
+﻿<Window x:Class="CortexCommandModManager.AddSkirmishItem"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Skirmish Item" Height="300" Width="608" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TextBlock Height="84" HorizontalAlignment="Left" Margin="10,10,0,0" Name="textBlock1" 
+                   Text="Here you can add an item to the list of skirmish attackers. Every Item has a Category and a Type. You will have to remember what type of item you are adding, based on the depth of the currently selected item. Adding SubItems to weapons is not supported. Type is the first name in the previous tree view." 
+                   TextWrapping="Wrap" VerticalAlignment="Top" Width="284" FontSize="10" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,130,0,0" Name="itemNameBox" VerticalAlignment="Top" Width="120" TabIndex="1" KeyDown="itemNameBox_KeyDown" />
+        <Label Content="Category:" Height="28" HorizontalAlignment="Left" Margin="12,99,0,0" Name="label1" VerticalAlignment="Top" Width="120" />
+        <Label Content="Type:" Height="28" HorizontalAlignment="Left" Margin="12,158,0,0" Name="label2" VerticalAlignment="Top" Width="120" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,189,0,0" Name="itemCopyOfBox" VerticalAlignment="Top" Width="282" TabIndex="2" KeyDown="itemCopyOfBox_KeyDown" />
+        <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="138,226,0,0" Name="btnOK" VerticalAlignment="Top" Width="75" Click="btnOK_Click" TabIndex="3" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="57,226,0,0" Name="btnCancel" VerticalAlignment="Top" Width="75" Click="btnCancel_Click" />
+        <ComboBox Height="23" HorizontalAlignment="Left" Margin="138,130,0,0" Name="defaultsCombo" VerticalAlignment="Top" Width="156" SelectionChanged="defaultsCombo_SelectionChanged" />
+        <TreeView Height="212" HorizontalAlignment="Left" Margin="319,37,0,0" Name="defaultItemsView" VerticalAlignment="Top" Width="255"/>
+        <Label Content="Default Items" Height="28" HorizontalAlignment="Left" Margin="319,10,0,0" Name="label3" VerticalAlignment="Top" Width="120" />
+    </Grid>
+</Window>

@@ -1,0 +1,94 @@
+﻿<Window x:Class="CortexCommandModManager.Activities.RandomSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:act="clr-namespace:CortexCommandModManager.Activities"
+        xmlns:src="clr-namespace:CortexCommandModManager"
+        xmlns:converter="clr-namespace:CortexCommandModManager.Converters"
+        Title="Generate Random Skirmish" Height="497" Width="513" MinHeight="495" MinWidth="446">
+    <Window.Resources>
+        <converter:ModNameConverter x:Key="modNameConverter" />
+    </Window.Resources>
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Reset to Defaults" Click="Window_ContextMenu_ResetToDefaults_Click" />
+        </ContextMenu>
+    </Window.ContextMenu>
+    <Grid Name="MainGrid">
+        <ListBox Name="modsToIncludeListBox" Margin="264,21,12,32" ScrollViewer.IsDeferredScrollingEnabled="True" SelectionMode="Multiple" MouseRightButtonDown="modsToIncludeListBox_MouseRightButtonDown">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type src:Mod}">
+                    <TextBlock Text="{Binding Converter={StaticResource modNameConverter}}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Select All" Click="ModsToIncludeListBox_ContextMenu_SelectAll_Click" />
+                    <MenuItem Header="Select None" Click="ModsToIncludeListBox_ContextMenu_SelectNone_Click" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        
+        <Label Content="Choose from these mods:" Height="28" Name="label1" VerticalAlignment="Top" Margin="264,0,12,0" HorizontalContentAlignment="Center" />
+        <GroupBox Header="Craft" Height="130" Margin="12,10,0,0" Name="groupBox1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="246">
+            <Grid>
+                <Slider Height="23" HorizontalAlignment="Left" Margin="6,26,0,0" Name="minCraftSlider" VerticalAlignment="Top" Width="162" SmallChange="1"
+                        Maximum="{Binding Path=MaximumCraft, Mode=OneWay}" 
+                        Value="{Binding Path=MinimumCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Interval="1" />
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="174,26,0,0" Name="minCraftTextBox" VerticalAlignment="Top" Width="39" 
+                        Text="{Binding Path=MinimumCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <Slider Height="23" HorizontalAlignment="Left" Margin="6,71,0,0" Name="maxCraftSlider" VerticalAlignment="Top" Width="162" Maximum="100" Interval="1" SmallChange="1"
+                        Value="{Binding Path=MaximumCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="174,71,0,0" Name="maxCraftTextBox" VerticalAlignment="Top" Width="39" 
+                        Text="{Binding Path=MaximumCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <Label Content="Minimum Craft" Height="28" HorizontalAlignment="Left" Margin="6,4,0,0" Name="label2" VerticalAlignment="Top" Width="162" />
+                <Label Content="Maximum Craft" Height="28" HorizontalAlignment="Left" Margin="6,47,0,0" Name="label3" VerticalAlignment="Top" Width="162" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Actors" Height="140" Margin="12,146,0,0" Name="groupBox2" VerticalAlignment="Top" HorizontalAlignment="Left" Width="246">
+            <Grid>
+                <Label Content="Minimum Actors per Craft" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label4" VerticalAlignment="Top" Grid.RowSpan="2" />
+                <Label Content="Maximum Actors per Craft" Height="28" HorizontalAlignment="Left" Margin="6,53,0,0" Name="label5" VerticalAlignment="Top" />
+                
+                <Slider Height="23" HorizontalAlignment="Left" Margin="6,29,0,0" Minimum="0" Name="minActorsSlider" VerticalAlignment="Top" Width="162" Interval="1" SmallChange="1"
+                        Maximum="{Binding MaximumActorsPerCraft, Mode=OneWay}"
+                        Value="{Binding Path=MinimumActorsPerCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <Slider Height="23" HorizontalAlignment="Left" Margin="6,78,0,0" Maximum="100" Name="maxActorsSlider" VerticalAlignment="Top" Width="162" 
+                        Value="{Binding Path=MaximumActorsPerCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Interval="1" SmallChange="1"/>
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="174,27,0,0" Name="minActorsTextBox" VerticalAlignment="Top" Width="39" 
+                         Text="{Binding Path=MinimumActorsPerCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="174,77,0,0" Name="maxActorsTextBox" VerticalAlignment="Top" Width="39" 
+                         Text="{Binding Path=MaximumActorsPerCraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Weapons" Margin="12,292,0,0" Name="groupBox3" HorizontalAlignment="Left" Width="246" Height="160" VerticalAlignment="Top">
+            <Grid>
+                <Label Content="Minimum Weapons per Actor" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label6" VerticalAlignment="Top" />
+                <Label Content="Maximum Weapons per Actor" Height="28" HorizontalAlignment="Left" Margin="12,56,0,0" Name="label7" VerticalAlignment="Top" />
+                
+                <Slider Height="23" HorizontalAlignment="Left" Margin="12,31,0,0" Minimum="0" Name="minWeaponsSlider" VerticalAlignment="Top" Width="162" Interval="1" SmallChange="1"
+                        Maximum="{Binding Path=MaximumWeaponsPerActor, Mode=OneWay}"
+                        Value="{Binding Path=MinimumWeaponsPerActor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <Slider Height="23" HorizontalAlignment="Left" Margin="12,80,0,0" Maximum="100" Name="maxWeaponsSlider" VerticalAlignment="Top" Width="162" Interval="1" SmallChange="1"
+                        Value="{Binding Path=MaximumWeaponsPerActor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="180,31,0,0" Name="minWeaponsTextBox" VerticalAlignment="Top" Width="39" 
+                        Text="{Binding Path=MinimumWeaponsPerActor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="180,80,0,0" Name="maxWeaponsTextBox" VerticalAlignment="Top" Width="39" 
+                        Text="{Binding Path=MaximumWeaponsPerActor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <CheckBox Content="Crabs can carry weapons" Height="16" HorizontalAlignment="Left" Margin="39,109,0,0" Name="crabsCarryWeaponsCheckBox" VerticalAlignment="Top" 
+                        IsChecked="{Binding Path=CrabsCanCarryWeapons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
+        <Button Content="Generate Skirmish" Height="23" Margin="264,0,12,5" Name="generateSkirmishButton" VerticalAlignment="Bottom" Click="generateSkirmishButton_Click" />
+    </Grid>
+</Window>
