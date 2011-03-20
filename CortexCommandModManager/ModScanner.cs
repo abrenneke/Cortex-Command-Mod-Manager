@@ -28,7 +28,7 @@ namespace CortexCommandModManager
         public List<Mod> GetDisabledMods()
         {
             string mainGameFolder = Grabber.Settings.Get().CCInstallDirectory;
-            List<Mod> modList = GetDirectMods(mainGameFolder + "\\" + Constants.DisabledModPath);
+            List<Mod> modList = GetDirectMods(mainGameFolder + "\\" + ModManager.DisabledModPath);
             Mods = modList;
             return modList;
         }
@@ -41,7 +41,7 @@ namespace CortexCommandModManager
         private static Mod MakeModFromDirectory(string directory, string rootFolder)
         {
             string modPath = directory;
-            bool enabled = !(rootFolder.Contains(Constants.DisabledModPath));
+            bool enabled = !(rootFolder.Contains(ModManager.DisabledModPath));
             string modDirectory = MakeModNameFromDirectory(directory);
             string name = TryGetModName(modPath) ?? MakeModNameFromDirectory(directory);
             string image = FindModImagePath(modPath);
@@ -81,7 +81,7 @@ namespace CortexCommandModManager
             }
             if (!found)
             {
-                string[] disabledDirectories = Directory.GetDirectories(Grabber.Settings.Get().CCInstallDirectory + "\\" + Constants.DisabledModPath);
+                string[] disabledDirectories = Directory.GetDirectories(Grabber.Settings.Get().CCInstallDirectory + "\\" + ModManager.DisabledModPath);
                 foreach (string directory in disabledDirectories)
                 {
                     if (directory.Contains(modDirectoryName))

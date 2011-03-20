@@ -6,17 +6,32 @@ namespace CortexCommandModManager
 {
     public static class ModManager
     {
+        public const string OldDisabledModPath = "Disabled_Mods";
+        public const string DisabledModPath = "_disabled_mods";
+
         /// <summary>
         /// Checks if the disabled mods folder exists and creates it if it doesn't.
         /// </summary>
         [Obsolete("Shouldn't be static")]
         public static void CheckDisabledFolderExists()
         {
-            if (!Directory.Exists(Grabber.Settings.Get().CCInstallDirectory + "\\" + Constants.DisabledModPath))
+            if (!Directory.Exists(Grabber.Settings.Get().CCInstallDirectory + "\\" + DisabledModPath))
             {
-                Directory.CreateDirectory(Grabber.Settings.Get().CCInstallDirectory + "\\" + Constants.DisabledModPath);
+                Directory.CreateDirectory(Grabber.Settings.Get().CCInstallDirectory + "\\" + DisabledModPath);
             }
         }
+
+        public static void RenameDisabledFolderIfNeeded()
+        {
+            var fullOldDirectory = Path.Combine(Grabber.Settings.Get().CCInstallDirectory, OldDisabledModPath);
+            var fullNewDirectory = Path.Combine(Grabber.Settings.Get().CCInstallDirectory, DisabledModPath);
+
+            if (Directory.Exists(fullOldDirectory))
+            {
+                Directory.Move(fullOldDirectory, fullNewDirectory);
+            }
+        }
+
         /// <summary>
         /// Enables a mod and returns the new location of the mod
         /// </summary>
@@ -44,7 +59,7 @@ namespace CortexCommandModManager
             string myDirectory = modCurrentFolder.Name;
 
             string source = mod.FullFolderPath;
-            string destination = Grabber.Settings.Get().CCInstallDirectory + "\\" + Constants.DisabledModPath + "\\" + myDirectory;
+            string destination = Grabber.Settings.Get().CCInstallDirectory + "\\" + DisabledModPath + "\\" + myDirectory;
 
             MoveMod(source, destination);
             InvalidateCache();
