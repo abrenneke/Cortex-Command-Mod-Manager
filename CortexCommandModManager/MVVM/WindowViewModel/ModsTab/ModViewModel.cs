@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 
 namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 {
@@ -124,14 +125,31 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         public override void Enable()
         {
-            modManager.EnableMod(Mod);
-            OnPropertyChanged(x => IsEnabled);
+            try
+            {
+                modManager.EnableMod(Mod);
+                OnPropertyChanged(x => IsEnabled);
+            }
+            catch (IOException)
+            {
+                throw new ModLockedException("The mod cannot be enabled, as an error occurred. Most likely there is a folder with the same name already enabled.");
+            }
         }
 
         public override void Disable()
         {
-            modManager.DisableMod(Mod);
-            OnPropertyChanged(x => IsEnabled);
+            if(PreinstalledMods.IsPreinstalledMod(Mod))
+                throw new ModLockedException("This mod cannot be disabled, as it is part of the original installation of Cortex Command.");
+
+            try
+            {
+                modManager.DisableMod(Mod);
+                OnPropertyChanged(x => IsEnabled);
+            }
+            catch (IOException)
+            {
+                throw new ModLockedException("This mod cannot be disabled, as a file in it is being used by another program, or the folder already exists in the Disabled Mods folder.");
+            }
         }
     }
 }
