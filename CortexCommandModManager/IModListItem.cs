@@ -12,10 +12,6 @@ namespace CortexCommandModManager
         /// <summary>Gets or sets whether the mod item is enabled.</summary>
         bool IsEnabled { get; }
 
-        void Enable();
-
-        void Disable();
-
         /// <summary>Gets whether the mod list item is preinstalled and cannot be removed.</summary>
         bool IsPreinstalled { get; }
     }

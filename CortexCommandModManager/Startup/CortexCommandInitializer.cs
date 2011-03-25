@@ -16,8 +16,8 @@ namespace CortexCommandModManager.Startup
 
         public void Initialize()
         {
-            ModManager.RenameDisabledFolderIfNeeded();
-            ModManager.CheckDisabledFolderExists();
+            initialization.ModManager.RenameDisabledFolderIfNeeded();
+            initialization.ModManager.CheckDisabledFolderExists();
             InitEnhancedSkirmish();
         }
 

@@ -7,34 +7,63 @@ using System.Text.RegularExpressions;
 
 namespace CortexCommandModManager
 {
-    public static class PresetManager
+    public class PresetManager
     {
         private static List<string> presetModsBuffer;
         private const string PresetsFolder = "presets";
         private const string PresetFileExtension = ".ccmmp";
 
-        public static IList<Preset> GetAllPresets()
+        private readonly ModScanner scanner;
+        private readonly ModManager modManager;
+
+        public PresetManager(ModScanner scanner, ModManager modManager)
+        {
+            this.scanner = scanner;
+            this.modManager = modManager;
+        }
+
+        public IList<Preset> GetAllPresets()
         {
             CheckForPresetsFolder();
             return GetAllPresetsFromFolder();
         }
 
-        public static void AddModToPreset(Mod mod, Preset preset)
+        public void EnablePreset(Preset preset)
+        {
+            foreach (var mod in preset)
+            {
+                modManager.EnableMod(mod);
+            }
+            preset.IsEnabled = true;
+            UpdatePreset(preset);
+        }
+
+        public void DisablePreset(Preset preset)
+        {
+            foreach (var mod in preset)
+            {
+                modManager.DisableMod(mod);
+            }
+            preset.IsEnabled = false;
+            UpdatePreset(preset);
+        }
+
+        public void AddModToPreset(Mod mod, Preset preset)
         {
             if (!ModIsInAPreset(mod))
             {
                 preset.Add(mod);
                 if (mod.IsEnabled != preset.IsEnabled)
                 {
-                    mod.ToggleEnabled();
+                    modManager.ToggleEnabled(mod);
                 }
-                PresetManager.SavePreset(preset);
+                SavePreset(preset);
                 LoadModsBuffer();
             }
         }
 
 
-        private static void LoadModsBuffer()
+        private void LoadModsBuffer()
         {
             var presets = GetAllPresets();
             List<string> modsList = new List<string>();
@@ -47,7 +76,7 @@ namespace CortexCommandModManager
             }
             presetModsBuffer = modsList;
         }
-        public static bool ModIsInAPreset(Mod mod)
+        public bool ModIsInAPreset(Mod mod)
         {
             if (presetModsBuffer == null)
             {
@@ -60,7 +89,7 @@ namespace CortexCommandModManager
             return false;
         }
 
-        public static Preset RenamePreset(Preset preset, string newname)
+        public Preset RenamePreset(Preset preset, string newname)
         {
             DeletePreset(preset);
             Preset newPreset = new Preset(newname, preset.IsEnabled);
@@ -69,7 +98,8 @@ namespace CortexCommandModManager
             LoadModsBuffer();
             return newPreset;
         }
-        public static void RemoveModFromPreset(Mod mod, Preset preset)
+
+        public void RemoveModFromPreset(Mod mod, Preset preset)
         {
             for (int i = 0; i < (new List<Mod>(preset)).Count; i++)
             {
@@ -82,7 +112,7 @@ namespace CortexCommandModManager
             SavePreset(preset);
         }
 
-        public static void SavePreset(Preset preset)
+        public void SavePreset(Preset preset)
         {
             if (PresetFileExists(preset))
             {
@@ -94,10 +124,12 @@ namespace CortexCommandModManager
             }
             LoadModsBuffer();
         }
+
         private static bool PresetFileExists(Preset preset)
         {
             return File.Exists(GetPresetFullFile(preset));
         }
+
         private static void CreatePresetFile(Preset preset)
         {
              StreamWriter writer = new StreamWriter(File.Create(GetPresetFullFile(preset)));
@@ -105,6 +137,7 @@ namespace CortexCommandModManager
             writer.Write(fileText);
             writer.Close();
         }
+
         private static void SavePresetInternal(Preset preset)
         {
             DeletePreset(preset);
@@ -115,6 +148,7 @@ namespace CortexCommandModManager
         {
             File.Delete(GetPresetFullFile(preset));
         }
+
         private static string PresetToFileText(Preset preset)
         {
             string text;
@@ -134,19 +168,21 @@ namespace CortexCommandModManager
         {
             return Path.Combine(Grabber.ModManagerDirectory, PresetsFolder, GetPresetFileName(preset));
         }
+
         private static string GetPresetFileName(Preset preset)
         {
             var charactersReplaced = preset.Name.Replace(' ', '-').Replace('.', '-');
             var symbolsReplaced = Regex.Replace(charactersReplaced, "[^a-zA-Z0-9-]", "");
             return symbolsReplaced + PresetFileExtension;
         }
-        private static List<Preset> GetAllPresetsFromFolder()
+
+        private List<Preset> GetAllPresetsFromFolder()
         {
             var files = Directory.GetFiles(Path.Combine(Grabber.ModManagerDirectory, PresetsFolder));
             return files.Select(GetPresetFromFile).ToList();
         }
 
-        private static Preset GetPresetFromFile(string file)
+        private Preset GetPresetFromFile(string file)
         {
             Preset preset;
             using (StreamReader reader = new StreamReader(file))
@@ -169,9 +205,9 @@ namespace CortexCommandModManager
             return preset;
         }
 
-        private static Mod GetModDetailsFromName(string name)
+        private Mod GetModDetailsFromName(string name)
         {
-            return ModScanner.SearchForMod(name);
+            return scanner.SearchForMod(name);
         }
 
         private static void CheckForPresetsFolder()
@@ -183,13 +219,13 @@ namespace CortexCommandModManager
             }
         }
 
-        public static void DisbandPreset(Preset preset)
+        public void DisbandPreset(Preset preset)
         {
             DeletePreset(preset);
             LoadModsBuffer();
         }
 
-        public static void UpdatePreset(Preset preset)
+        public void UpdatePreset(Preset preset)
         {
             SavePresetInternal(preset);
             LoadModsBuffer();

@@ -13,23 +13,23 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
     /// <summary>A view model for a Mod.</summary>
     public class ModViewModel : ModListItemViewModel
     {
-        /// <summary>Gets or sets the mod that this view model is wrapping.</summary>
-        public Mod Mod { get { return mod; } set { mod = value; ModListItem = value; } }
-        private Mod mod;
+        /// <summary>Gets the mod that this view model is wrapping.</summary>
+        public Mod Mod { get; private set; }
+
+        public string Name { get { return Mod.Name; } }
 
         /// <summary>Gets the folder of the mod.</summary>
-        public string Folder { get { return mod.Folder; } }
+        public string Folder { get { return Mod.Folder; } }
 
         /// <summary>Gets an ImageSource for the icon of the mod.</summary>
         public ImageSource Icon { get { return Mod.BitmapSource; } }
 
+        public override bool IsEnabled { get { return Mod.IsEnabled; } }
 
         /// <summary>Event for when this mod has been deleted.</summary>
         public event Action OnDeleted;
-
         /// <summary>Event for when this mod has been added to a preset.</summary>
         public event Action<Preset> OnAddedToPreset;
-
 
         public ICommand DeleteModCommand { get; set; }
         public ICommand AddModToPresetCommand { get; set; }
@@ -37,10 +37,17 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         public IList<MenuItem> PresetsCanBeAddedTo { get { return GetPresetsCanBeAddedToMenuItems(); } }
 
+        private readonly ModManager modManager;
+        private readonly PresetManager presetManager;
+
         /// <summary>Creates a new view model wrapper for a mod.</summary>
-        public ModViewModel(Mod mod) : base(mod)
+        public ModViewModel(Mod mod, ModManager modManager, PresetManager presetManager) : base()
         {
+            this.modManager = modManager;
+            this.presetManager = presetManager;
+
             Mod = mod;
+
             DeleteModCommand = new Command(DeleteMod);
             AddModToPresetCommand = new Command<Preset>(AddToPreset);
             NewPresetForModCommand = new Command(AddToNewPreset);
@@ -54,7 +61,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
             if (result != MessageBoxResult.Yes)
                 return;
 
-            Mod.Delete();
+            modManager.DeleteMod(Mod);
 
             if (OnDeleted != null)
                 OnDeleted();
@@ -62,7 +69,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         private void AddToNewPreset()
         {
-            if (mod.IsInOriginalInstallation())
+            if (Mod.IsInOriginalInstallation())
             {
                 MessageBox.Show("This mod cannot be added to a preset, as it is part of the core of Cortex Command.", "Notice", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
@@ -77,9 +84,9 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
             if (result)
             {
                 var presetName = addPresetWindow.PresetName;
-                var preset = new Preset(presetName, mod.IsEnabled);
-                preset.Add(mod);
-                PresetManager.SavePreset(preset);
+                var preset = new Preset(presetName, Mod.IsEnabled);
+                preset.Add(Mod);
+                presetManager.SavePreset(preset);
 
                 if (OnAddedToPreset != null)
                     OnAddedToPreset(preset);
@@ -88,13 +95,13 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         private void AddToPreset(Preset preset)
         {
-            if (mod.IsInOriginalInstallation())
+            if (Mod.IsInOriginalInstallation())
             {
                 MessageBox.Show("This mod cannot be added to a preset, as it is part of the core of Cortex Command.", "Notice", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
-            PresetManager.AddModToPreset(mod, preset);
+            presetManager.AddModToPreset(Mod, preset);
 
             if (OnAddedToPreset != null)
                 OnAddedToPreset(preset);
@@ -102,7 +109,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         private IList<MenuItem> GetPresetsCanBeAddedToMenuItems()
         {
-            var presets = PresetManager.GetAllPresets();
+            var presets = presetManager.GetAllPresets();
 
             return presets.Select(x =>
             {
@@ -113,6 +120,18 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
                     CommandParameter = x
                 };
             }).ToList();
+        }
+
+        public override void Enable()
+        {
+            modManager.EnableMod(Mod);
+            OnPropertyChanged(x => IsEnabled);
+        }
+
+        public override void Disable()
+        {
+            modManager.DisableMod(Mod);
+            OnPropertyChanged(x => IsEnabled);
         }
     }
 }

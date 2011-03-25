@@ -27,10 +27,12 @@ namespace CortexCommandModManager.Startup
 
         private void InitializeSingletonScopedObjects()
         {
+            initialization.ModManager = new ModManager(initialization.Settings);
             initialization.EnhancedSkirmish = new EnhancedSkirmish();
             initialization.SkirmishSettingsManager = new SkirmishSettingsManager();
             initialization.GameSettingsManager = new GameSettingsManager();
-            initialization.ModScanner = new ModScanner();
+            initialization.ModScanner = new ModScanner(initialization.Settings, initialization.ModManager);
+            initialization.PresetManager = new PresetManager(initialization.ModScanner, initialization.ModManager);
         }
 
         private void InitializeCortexCommandDirectory()

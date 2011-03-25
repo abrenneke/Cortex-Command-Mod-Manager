@@ -8,14 +8,18 @@ namespace CortexCommandModManager.Activities
 {
     public class ModActivityItemsLoader
     {
-        private ActivityFileReader reader = new ActivityFileReader();
-
         public event Action<Mod> OnLoadingMod;
+
+        private readonly ModScanner scanner;
+        private readonly ActivityFileReader reader = new ActivityFileReader();
+
+        public ModActivityItemsLoader(ModScanner scanner)
+        {
+            this.scanner = scanner;
+        }
 
         public IEnumerable<ActivityItem> LoadAllMods()
         {
-            ModScanner scanner = new ModScanner();
-
             if (Grabber.ActivityItemCache == null)
             {
                 LoadCache();
@@ -35,7 +39,8 @@ namespace CortexCommandModManager.Activities
 
         private void LoadCache()
         {
-            Grabber.ActivityItemCache = new ActivityItemCache(Path.Combine(Grabber.ModManagerDirectory, ".modcache"));
+            var cachePath = Path.Combine(Grabber.ModManagerDirectory, ".modcache");
+            Grabber.ActivityItemCache = new ActivityItemCache(scanner, cachePath);
         }
 
         public IEnumerable<ActivityItem> LoadMod(Mod mod)

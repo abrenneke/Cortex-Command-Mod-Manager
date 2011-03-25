@@ -14,5 +14,8 @@ namespace CortexCommandModManager.Startup
         public SkirmishSettingsManager SkirmishSettingsManager { get; set; }
         public GameSettingsManager GameSettingsManager { get; set; }
         public ModScanner ModScanner { get; set; }
+
+        public ModManager ModManager { get; set; }
+        public PresetManager PresetManager { get; set; }
     }
 }

@@ -86,7 +86,7 @@ namespace CortexCommandModManager
                 InitMembers();
                 ElevateCCMMIfCCIsInProgramFiles();
                 InitWindowSize();
-                ModManager.CheckDisabledFolderExists();
+                //ModManager.CheckDisabledFolderExists();
                 LoadEnhancedSkirmish();
                 InitUIBoxes();
                 LoadAllModListItems();
@@ -201,7 +201,7 @@ namespace CortexCommandModManager
             skirmishSettingsManager = new SkirmishSettingsManager();
             gameSettingsManager = new GameSettingsManager();
             skirmishWavesScanner = new SkirmishWavesScanner();
-            modScanner = new ModScanner();
+            //modScanner = new ModScanner();
         }
         /// <summary>
         /// Initizlizes the cortex command directory, asks if it doesn't exist.
@@ -314,10 +314,10 @@ namespace CortexCommandModManager
                     Thread.Sleep(50);
                 }
                 IList<Mod> mods = modScanner.GetAllMods();
-                IEnumerable<Preset> presets = PresetManager.GetAllPresets();
+                //IEnumerable<Preset> presets = PresetManager.GetAllPresets();
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => 
                 {
-                    ModListItemsLoaded(mods, presets);
+                    //ModListItemsLoaded(mods, presets);
                 }));
             }));
             workerThread.IsBackground = true;
@@ -361,10 +361,10 @@ namespace CortexCommandModManager
             modListItemInternal = new List<IModListItem>();
             foreach (Mod mod in mods)
             {
-                if(!PresetManager.ModIsInAPreset(mod))
+                /*if(!PresetManager.ModIsInAPreset(mod))
                 {
                     modListItemInternal.Add(mod);
-                }
+                }*/
             }
             foreach (Preset preset in presets)
             {
@@ -432,8 +432,8 @@ namespace CortexCommandModManager
 
                 addToPresetItem.Items.Add(newPresetItem);
 
-                bool separatorAdded = false;
-                foreach (Preset preset in PresetManager.GetAllPresets())
+                //bool separatorAdded = false;
+                /*foreach (Preset preset in PresetManager.GetAllPresets())
                 {
                     Preset currentPreset = preset;
                     if (!separatorAdded)
@@ -445,7 +445,7 @@ namespace CortexCommandModManager
                     presetItem.Header = preset.Name;
                     presetItem.Click += (o, e) => AddModToPreset(mod, currentPreset);
                     addToPresetItem.Items.Add(presetItem);
-                }
+                }*/
 
                 menu.Items.Add(addToPresetItem);
             }
@@ -472,7 +472,7 @@ namespace CortexCommandModManager
         }
         private void DisbandPreset(Preset preset)
         {
-            PresetManager.DisbandPreset(preset);
+            //PresetManager.DisbandPreset(preset);
             HardRefreshModsList();
         }
         private void RenamePreset(Preset preset)
@@ -481,7 +481,7 @@ namespace CortexCommandModManager
             if ((bool)window.ShowDialog())
             {
                 string presetName = window.PresetName;
-                PresetManager.RenamePreset(preset, presetName);
+                //PresetManager.RenamePreset(preset, presetName);
             }
             HardRefreshModsList();
         }
@@ -498,7 +498,7 @@ namespace CortexCommandModManager
                 string presetName = window.PresetName;
                 Preset preset = new Preset(presetName, mod.IsEnabled);
                 preset.Add(mod);
-                PresetManager.SavePreset(preset);
+                //PresetManager.SavePreset(preset);
             }
             HardRefreshModsList();
         }
@@ -509,7 +509,7 @@ namespace CortexCommandModManager
                 MessageBox.Show("This mod cannot be added to a preset, as it is part of the core of Cortex Command.", "Notice", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            PresetManager.AddModToPreset(mod, preset);
+            //PresetManager.AddModToPreset(mod, preset);
             HardRefreshModsList();
         }
         private void GeneratePresetModContextMenu(object sender)
@@ -533,7 +533,7 @@ namespace CortexCommandModManager
         }
         private void RemoveModFromPreset(Mod mod, Preset preset)
         {
-            PresetManager.RemoveModFromPreset(mod, preset);
+            //PresetManager.RemoveModFromPreset(mod, preset);
             HardRefreshModsList();
         }
         private void InstallModsFromDialog()
@@ -1057,7 +1057,7 @@ namespace CortexCommandModManager
         {
             if (Grabber.ActivityItemCache == null || Grabber.ActivityItemCache.CacheIsValid == false)
             {
-                new ActivityItemLoaderWindow(){Owner = this, WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner}.ShowDialog();
+                //new ActivityItemLoaderWindow(){Owner = this, WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner}.ShowDialog();
             }
 
             var items = Grabber.ActivityItemCache.GetAll();

@@ -11,35 +11,14 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
     /// <summary>View model decorator for a mod list item (preset or mod).</summary>
     public abstract class ModListItemViewModel : ViewModel
     {
-        /// <summary>Gets or sets the wrapped mod list item.</summary>
-        public IModListItem ModListItem
-        {
-            get { return ThrowIfNull(modListItem); }
-            set { modListItem = value; }
-        }
-        private IModListItem modListItem;
+        public abstract bool IsEnabled { get; }
 
         public ICommand ToggleEnabledCommand { get; set; }
 
-        public ModListItemViewModel() 
+        public ModListItemViewModel()
         {
             ToggleEnabledCommand = new Command(ToggleEnabled);
         }
-
-        /// <summary>Creates a new view model decorator around a mod list item.</summary>
-        public ModListItemViewModel(IModListItem inner) : this()
-        {
-            this.ModListItem = inner;
-        }
-
-        /// <summary>Gets the name of the mod item.</summary>
-        public string Name { get { return ModListItem.Name; } }
-
-        /// <summary>Gets or sets whether the mod item is enabled.</summary>
-        public bool IsEnabled { get { return ModListItem.IsEnabled; } }
-
-        /// <summary>Gets whether the mod item is preinstalled and cannot be modified.</summary>
-        public bool IsPreinstalled { get { return modListItem.IsPreinstalled; } }
 
         public void ToggleEnabled()
         {
@@ -57,16 +36,8 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
             }
         }
 
-        public void Enable()
-        {
-            ModListItem.Enable();
-            OnPropertyChanged(x => IsEnabled);
-        }
+        public abstract void Enable();
 
-        public void Disable()
-        {
-            modListItem.Disable();
-            OnPropertyChanged(x => IsEnabled);
-        }
+        public abstract void Disable();
     }
 }

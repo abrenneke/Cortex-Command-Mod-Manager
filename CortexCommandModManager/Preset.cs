@@ -16,42 +16,17 @@ namespace CortexCommandModManager
             IsEnabled = enabled;
         }
 
-        public void Enable()
-        {
-            foreach (Mod mod in this)
-            {
-                mod.Enable();
-            }
-            this.IsEnabled = true;
-            PresetManager.UpdatePreset(this);
-        }
-        public void Disable()
-        {
-            foreach (Mod mod in this)
-            {
-                mod.Disable();
-            }
-            this.IsEnabled = false;
-            PresetManager.UpdatePreset(this);
-        }
-        public void ToggleEnabled()
-        {
-            if (IsEnabled)
-            {
-                Disable();
-            }
-            else
-            {
-                Enable();
-            }
-        }
-
         public override bool Equals(object obj)
         {
             var other = obj as Preset;
             if (other == null) return false;
 
             return Name == other.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
         }
     }
 }

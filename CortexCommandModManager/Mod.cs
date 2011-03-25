@@ -39,17 +39,15 @@ namespace CortexCommandModManager
 
         public bool IsPreinstalled { get { return PreinstalledMods.IsPreinstalledMod(this); } }
 
-        public Mod() { }
         /// <summary>
         /// Make a mod from the mod details. Mods shouldn't be changed on the fly, so they are created here.
         /// </summary>
         /// <param name="fullFolderPath">The full path to the mod folder</param>
         /// <param name="name">The name of the mod</param>
         /// <param name="enabled">If the mod is enabled or disabled initially</param>
-        /// <param name="directory"></param>
+        /// <param name="folder">The folder name of the mod (e.g. base.rte)</param>
         /// <param name="icon">The icon for the mod, if it exists</param>
-        /// <returns></returns>
-        public static Mod MakeMod(string fullFolderPath, string name, bool enabled, string directory, string icon )
+        public static Mod MakeMod(string fullFolderPath, string name, bool enabled, string folder, string icon )
         {
             Mod mod = new Mod
                           {
@@ -57,10 +55,11 @@ namespace CortexCommandModManager
                               FullFolderPath = fullFolderPath,
                               IsEnabled = enabled,
                               IconPath = icon,
-                              Folder = directory
+                              Folder = folder
                           };
             return mod;
         }
+
         public void LoadIcon()
         {
             if (IconPath == null)
@@ -84,66 +83,7 @@ namespace CortexCommandModManager
                 
             }
         }
-        public void ToggleEnabled()
-        {
-            if (IsEnabled)
-            {
-                Disable();
-            }
-            else
-            {
-                Enable();
-            }
-        }
-        public void Enable()
-        {
-            if (!IsEnabled)
-            {
-                try
-                {
-                    string newPath = ModManager.EnableMod(this);
-                    IsEnabled = true;
-                    FullFolderPath = newPath;
-                    IconPath = ModScanner.FindModImagePath(FullFolderPath);
-                }
-                catch (IOException)
-                {
-                    throw new ModLockedException("The mod cannot be enabled, as an error occurred. Most likely there is a folder with the same name already enabled.");
-                }
-            }
-        }
-        public void Disable()
-        {
-            if (IsEnabled)
-            {
-                if (CanBeDisabled())
-                {
-                    try
-                    {
-                        string newPath = ModManager.DisableMod(this);
-                        IsEnabled = false;
-                        FullFolderPath = newPath;
-                        IconPath = ModScanner.FindModImagePath(FullFolderPath);
-                    }
-                    catch (IOException)
-                    {
-                        throw new ModLockedException("This mod cannot be disabled, as a file in it is being used by another program, or the folder already exists in the ");
-                    }
-                }
-                else
-                {
-                    if (IsInOriginalInstallation())
-                    {
-                        throw new ModLockedException("This mod cannot be disabled, as it is part of the original installation of Cortex Command.");
-                    }
-                    if (IsCreatedSkirmishMod())
-                    {
-                        throw new ModLockedException("This mod cannot be disabled, as it it required for the Activities Manager.");
-                    }
-                }
-            }
-        }
-
+        
         public bool IsInOriginalInstallation()
         {
             return Constants.OriginalInstallationMods.Any(x => x == Folder);
@@ -180,12 +120,6 @@ namespace CortexCommandModManager
         {
             if (!(obj is Mod)) return -1;
             return this.CompareTo((Mod)obj);
-        }
-
-        /// <summary>Deletes the mod from the filesystem.</summary>
-        public void Delete()
-        {
-            ModManager.DeleteMod(this);
         }
     }
 }

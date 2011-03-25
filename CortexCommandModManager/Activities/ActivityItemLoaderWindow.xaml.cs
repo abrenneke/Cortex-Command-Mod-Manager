@@ -20,18 +20,21 @@ namespace CortexCommandModManager
     /// </summary>
     public partial class ActivityItemLoaderWindow : Window
     {
-        private BackgroundWorker loadingWorker;
-
         public IEnumerable<ActivityItem> Activities { get; set; }
 
-        public ActivityItemLoaderWindow()
+        private readonly ModScanner scanner;
+        private readonly ModActivityItemsLoader activityItemsLoader;
+        private BackgroundWorker loadingWorker;
+
+        public ActivityItemLoaderWindow(ModScanner scanner, ModActivityItemsLoader activityItemsLoader)
         {
+            this.scanner = scanner;
+            this.activityItemsLoader = activityItemsLoader;
+
             InitializeComponent();
 
             if (Grabber.ActivityItemCache == null)
-            {
-                Grabber.ActivityItemCache = new ActivityItemCache(".modcache");
-            }
+                Grabber.ActivityItemCache = new ActivityItemCache(scanner, ".modcache");
 
             loadingWorker = new BackgroundWorker();
             loadingWorker.DoWork += (o, e) => LoadActivityItems();
@@ -49,9 +52,6 @@ namespace CortexCommandModManager
 
         private void LoadActivityItems()
         {
-
-            ModScanner scanner = new ModScanner();
-            var activityLoader = new ModActivityItemsLoader();
             var enabledMods = scanner.GetEnabledMods();
 
             foreach (var mod in enabledMods)
@@ -59,14 +59,14 @@ namespace CortexCommandModManager
                 if (!Grabber.ActivityItemCache.ModIsCached(mod))
                 {
                     loadingWorker.ReportProgress(50, mod);
-                    Grabber.ActivityItemCache.AddItems(activityLoader.LoadMod(mod));
+                    Grabber.ActivityItemCache.AddItems(activityItemsLoader.LoadMod(mod));
                 }
             }
 
             Grabber.ActivityItemCache.EnabledMods = enabledMods;
             Activities = Grabber.ActivityItemCache.GetAll();
             Grabber.ActivityItemCache.SaveCache();
-            Grabber.ActivityItemCache.CacheIsValid = true;
+            Grabber.ActivityItemCache.ValidateCache();
 
             /*var CCPath = Grabber.Settings.Get().CCInstallDirectory;
             foreach (var activityItem in Activities)

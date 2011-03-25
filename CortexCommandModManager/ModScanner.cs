@@ -1,67 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using XmlConfig.Core;
 
 namespace CortexCommandModManager
 {
     public class ModScanner
     {
-        /// <summary>
-        /// All of the mods returned by GetAllMods, GetEnabledMods, or GetDisabledMods
-        /// </summary>
-        public List<Mod> Mods { get; private set; }
+        private readonly Settings<SettingsObject> settings;
+        private readonly ModManager modManager;
 
-        public List<Mod> GetAllMods()
+        public ModScanner(Settings<SettingsObject> settings, ModManager modManager)
         {
-            List<Mod> mods = GetEnabledMods();
-            mods.AddRange(GetDisabledMods());
-            Mods = mods;
-            return mods;
+            this.settings = settings;
+            this.modManager = modManager;
         }
-        public List<Mod> GetEnabledMods()
+
+        public IList<Mod> GetAllMods()
         {
-            string mainGameFolder = Grabber.Settings.Get().CCInstallDirectory;
-            List<Mod> modList = GetDirectMods(mainGameFolder);
-            Mods = modList;
-            return modList;
+            return GetEnabledMods().Concat(GetDisabledMods()).ToList();
         }
-        public List<Mod> GetDisabledMods()
+
+        public IList<Mod> GetEnabledMods()
         {
-            string mainGameFolder = Grabber.Settings.Get().CCInstallDirectory;
-            List<Mod> modList = GetDirectMods(mainGameFolder + "\\" + ModManager.DisabledModPath);
-            Mods = modList;
-            return modList;
+            return GetDirectMods(settings.Get().CCInstallDirectory);
         }
-        private static List<Mod> GetDirectMods(string folder)
+
+        public IList<Mod> GetDisabledMods()
+        {
+            return GetDirectMods(modManager.DisabledModPath);
+        }
+
+        private IList<Mod> GetDirectMods(string folder)
         {
             var directories = Directory.GetDirectories(folder, "*.rte", SearchOption.TopDirectoryOnly);
             return directories.Select(x => MakeModFromDirectory(x, folder)).ToList();
         }
 
-        private static Mod MakeModFromDirectory(string directory, string rootFolder)
+        private Mod MakeModFromDirectory(string directory, string rootFolder)
         {
-            string modPath = directory;
-            bool enabled = !(rootFolder.Contains(ModManager.DisabledModPath));
-            string modDirectory = MakeModNameFromDirectory(directory);
-            string name = TryGetModName(modPath) ?? MakeModNameFromDirectory(directory);
-            string image = FindModImagePath(modPath);
-            if (image != null)
-            {
-                FileInfo info = new FileInfo(image);
-                if (!info.Exists)
-                {
-                    image = null;
-                }
-            }
-            Mod mod = Mod.MakeMod(modPath, name, enabled, modDirectory, image);
-            return mod;
+            var isEnabled = modManager.ModIsEnabled(directory);
+            var folderName = Path.GetFileName(directory);
+            var name = TryGetModName(directory) ?? folderName;
+
+            var image = FindModImagePath(directory);
+            if (image != null && !File.Exists(image))
+                image = null;
+
+            return Mod.MakeMod(directory, name, isEnabled, folderName, image);
         }
-        /// <summary>
-        /// Searches for a mod based on simply the folder name, e.g. browncoats.rte
-        /// </summary>
-        /// <param name="modDirectoryName"></param>
-        /// <returns></returns>
-        public static Mod SearchForMod(string modDirectoryName)
+
+        /// <summary>Searches for a mod based on simply the folder name, e.g. browncoats.rte</summary>
+        public Mod SearchForMod(string modDirectoryName)
         {
             string[] enabledDirectories = Directory.GetDirectories(Grabber.Settings.Get().CCInstallDirectory);
             bool found = false;
@@ -74,21 +64,21 @@ namespace CortexCommandModManager
                 {
                     found = true;
                     enabled = true;
-                    modDirectory = MakeModNameFromDirectory(directory);
+                    modDirectory = Path.GetFileName(directory);
                     fullDirectory = directory;
                     break;
                 }
             }
             if (!found)
             {
-                string[] disabledDirectories = Directory.GetDirectories(Grabber.Settings.Get().CCInstallDirectory + "\\" + ModManager.DisabledModPath);
+                var disabledDirectories = Directory.GetDirectories(modManager.DisabledModPath);
                 foreach (string directory in disabledDirectories)
                 {
                     if (directory.Contains(modDirectoryName))
                     {
                         found = true;
                         enabled = false;
-                        modDirectory = MakeModNameFromDirectory(directory);
+                        modDirectory = Path.GetFileName(directory);
                         fullDirectory = directory;
                         break;
                     }
@@ -98,7 +88,7 @@ namespace CortexCommandModManager
             {
                 throw new FileNotFoundException("The mod " + modDirectoryName + " in the preset was not found in this intallation of Cortex Command");
             }
-            string name = TryGetModName(fullDirectory) ?? MakeModNameFromDirectory(fullDirectory);
+            string name = TryGetModName(fullDirectory) ?? Path.GetFileName(fullDirectory);
             string image = FindModImagePath(fullDirectory);
             if (image != null)
             {
@@ -110,12 +100,6 @@ namespace CortexCommandModManager
             }
             Mod mod = Mod.MakeMod(fullDirectory, name, enabled, modDirectory, image);
             return mod;
-        }
-
-        private static string MakeModNameFromDirectory(string directory)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
-            return directoryInfo.Name;
         }
 
         private static string TryGetModSetting(string directory, string name)

@@ -9,21 +9,28 @@ namespace CortexCommandModManager.Activities
 {
     public class ActivityItemCache
     {
-        private IList<ActivityItem> CacheItems;
-        private string cacheFile;
-
-        public bool CacheIsValid { get; set; }
-
-        public void InvalidateCache()
-        {
-            CacheIsValid = false;
-        }
+        public bool CacheIsValid { get; private set; }
 
         private IList<Mod> enabledMods;
-        public IList<Mod> EnabledMods { get { if (enabledMods == null) enabledMods = (new ModScanner()).GetEnabledMods(); return enabledMods; } set { enabledMods = value; } }
+        public IList<Mod> EnabledMods 
+        { 
+            get 
+            { 
+                if (enabledMods == null) 
+                    enabledMods = scanner.GetEnabledMods(); 
+                return enabledMods; 
+            } 
+            set { enabledMods = value; } 
+        }
 
-        public ActivityItemCache(string cacheFile)
+        private readonly ModScanner scanner;
+        private readonly string cacheFile;
+
+        private IList<ActivityItem> cacheItems;
+        
+        public ActivityItemCache(ModScanner scanner, string cacheFile)
         {
+            this.scanner = scanner;
             this.cacheFile = cacheFile;
             if (File.Exists(cacheFile))
             {
@@ -35,10 +42,20 @@ namespace CortexCommandModManager.Activities
             }
         }
 
+        public void InvalidateCache()
+        {
+            CacheIsValid = false;
+        }
+
+        public void ValidateCache()
+        {
+            CacheIsValid = true;
+        }
+
         private void CreateAndLoadCacheFile()
         {
             File.Create(cacheFile).Close();
-            CacheItems = new List<ActivityItem>();
+            cacheItems = new List<ActivityItem>();
         }
 
         private void LoadCacheFile()
@@ -50,35 +67,34 @@ namespace CortexCommandModManager.Activities
             }
             var allActivities = JsonConvert.DeserializeObject<List<ActivityItem>>(jsonData);
 
-            CacheItems = allActivities;
+            cacheItems = allActivities;
         }
 
         public IEnumerable<ActivityItem> GetAll()
         {
-            if (CacheItems == null)
+            if (cacheItems == null)
                 throw new InvalidOperationException("An unexpected error occurred when loading cached items. Please try deleting your .mmitems file and load this again.");
-            return CacheItems.Where(x => EnabledMods.Contains(x.Mod));
+            return cacheItems.Where(x => EnabledMods.Contains(x.Mod));
         }
 
         public bool ModIsCached(Mod mod)
         {
-            return CacheItems.Any(x => x.Mod.Equals(mod));
+            return cacheItems.Any(x => x.Mod.Equals(mod));
         }
 
         public void AddItems(IEnumerable<ActivityItem> items)
         {
-            CacheItems = CacheItems.Union(items).ToList();
+            cacheItems = cacheItems.Union(items).ToList();
         }
 
         public void SaveCache()
         {
-            var serializedItems = JsonConvert.SerializeObject(CacheItems, Formatting.None, new JsonSerializerSettings() { PreserveReferencesHandling = PreserveReferencesHandling.All });
+            var serializedItems = JsonConvert.SerializeObject(cacheItems, Formatting.None, new JsonSerializerSettings() { PreserveReferencesHandling = PreserveReferencesHandling.All });
 
             using (var writer = new StreamWriter(new FileStream(cacheFile, FileMode.Create)))
             {
                 writer.Write(serializedItems);
             }
         }
-
     }
 }

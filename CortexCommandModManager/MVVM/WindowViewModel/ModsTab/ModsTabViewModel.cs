@@ -39,7 +39,10 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
         public ModsTabIcons Icons { get; private set; }
 
         private ObservableCollection<ModListItemViewModel> modItemsInternal;
-        private CCMMInitialization initialization;
+       
+        private readonly CCMMInitialization initialization;
+        private readonly ModManager modManager;
+        private readonly PresetManager presetManager;
 
         public ModsTabViewModel(CCMMInitialization initialization)
         {
@@ -58,6 +61,8 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
             InitModsCollectionSource();
 
             this.initialization = initialization;
+            this.modManager = initialization.ModManager;
+            this.presetManager = initialization.PresetManager;
         }
 
         private void InitModsCollectionSource()
@@ -76,7 +81,8 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
                 if (showDisabledMods && modItem.IsEnabled == false)
                     e.Accepted = true;
 
-                if (modItem.IsPreinstalled)
+                var modViewModel = modItem as ModViewModel;
+                if (modViewModel != null && PreinstalledMods.IsPreinstalledMod(modViewModel.Mod))
                     e.Accepted = false;
             };
         }
@@ -144,7 +150,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
         private void LoadAllMods()
         {
             var mods = initialization.ModScanner.GetAllMods();
-            var presets = PresetManager.GetAllPresets();
+            var presets = presetManager.GetAllPresets();
             ModListItemsLoaded(mods, presets);
         }
 
@@ -152,11 +158,11 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
         {
             var modItems = new List<IModListItem>(mods.Count + presets.Count);
 
-            var validMods = mods.Where(x => PresetManager.ModIsInAPreset(x) == false);
+            var validMods = mods.Where(x => presetManager.ModIsInAPreset(x) == false);
             validMods.Each(x => x.LoadIcon());
 
-            modItems.AddRange(mods.Where(x => PresetManager.ModIsInAPreset(x) == false).Cast<IModListItem>());
-            modItems.AddRange(presets.Cast<IModListItem>());
+            modItems.AddRange(validMods);
+            modItems.AddRange(presets);
 
             var viewModels = modItems
                 .OrderBy(x => x.Name)
@@ -233,7 +239,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         private ModViewModel MakeModViewModel(Mod mod)
         {
-            var viewModel = new ModViewModel(mod);
+            var viewModel = new ModViewModel(mod, initialization.ModManager, initialization.PresetManager);
             viewModel.OnDeleted += () => OnModDeleted(viewModel);
             viewModel.OnAddedToPreset += x => OnModAddedToPreset(viewModel, x);
             return viewModel;
@@ -241,7 +247,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel.ModsTab
 
         private PresetViewModel MakePresetViewModel(Preset preset)
         {
-            var viewModel = new PresetViewModel(preset);
+            var viewModel = new PresetViewModel(preset, initialization.ModManager, initialization.PresetManager);
             viewModel.OnDisband += () => OnPresetDisband(viewModel);
             return viewModel;
         }

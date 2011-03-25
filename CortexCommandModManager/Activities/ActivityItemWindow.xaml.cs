@@ -31,10 +31,10 @@ namespace CortexCommandModManager
             if (Grabber.ActivityItemCache == null || Grabber.ActivityItemCache.CacheIsValid == false)
             {
 
-                ActivityItemLoaderWindow loaderWindow = new ActivityItemLoaderWindow();
-                loaderWindow.ShowDialog();
+                //ActivityItemLoaderWindow loaderWindow = new ActivityItemLoaderWindow();
+                //loaderWindow.ShowDialog();
 
-                ActivityItems = loaderWindow.Activities;
+                //ActivityItems = loaderWindow.Activities;
             }
             else
             {
