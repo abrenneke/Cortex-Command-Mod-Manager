@@ -247,60 +247,6 @@
 
             <!-- Activities Tab -->
             <TabItem Header="Activities">
-
-                <TabItem.Resources>
-                    <ContextMenu x:Key="inventoryItemsContextMenu">
-                        <MenuItem Header="Add To" />
-                        <MenuItem Header="Duplicate" />
-                        <MenuItem Header="Delete" />
-                        <Separator />
-                        <MenuItem Header="Random Skirmish" />
-                    </ContextMenu>
-                </TabItem.Resources>
-
-                <Grid>
-
-                    <!-- Skirmish Waves Tree View -->
-                    <TreeView Margin="6,40,11,39">
-                        <TreeView.Resources>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <!--<EventSetter Event="KeyDown"/>
-                                <EventSetter Event="PreviewMouseRightButtonDown"/>-->
-                                <Setter Property="ContextMenu" Value="{StaticResource inventoryItemsContextMenu}"/>
-                            </Style>
-                            <HierarchicalDataTemplate DataType="{x:Type src:InventoryItem}" ItemsSource="{Binding SubItems}">
-                                <StackPanel Height="16" Orientation="Horizontal">
-                                    <Image Margin="0,0,10,0" Source="{Binding Name, Converter={StaticResource skirmishItemImageConverter}}"/>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding CopyOf}"/>
-                                    <TextBlock VerticalAlignment="Center" Text=" ("/>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
-                                    <TextBlock VerticalAlignment="Center" Text=")"/>
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
-
-                    <!-- Top area of Skirmish Waves -->
-                    <Label Content="Title:" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="47" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="61,8,0,0" VerticalAlignment="Top" Width="139" />
-                    <Label Content="Description:" Height="28" HorizontalAlignment="Left" Margin="293,6,0,0" VerticalAlignment="Top" Width="73" />
-                    <Button Content="v" Height="18" HorizontalAlignment="Left" Margin="371,11,0,0" VerticalAlignment="Top" Width="15" FontSize="10" />
-
-                    <Border Padding="5" Background="White" CornerRadius="5" BorderBrush="Silver" BorderThickness="1" Height="100" 
-                            Margin="223,31,0,0" VerticalAlignment="Top" Panel.ZIndex="1" Visibility="Hidden" HorizontalAlignment="Left" Width="200">
-                        <TextBox BorderBrush="Transparent" BorderThickness="0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" ></TextBox>
-                    </Border>
-
-                    <Label Content="Load/Save Activities:" Height="28" HorizontalAlignment="Right" Margin="0,0,41,6" VerticalAlignment="Bottom" Width="120" />
-
-                    <!-- Button to open the activities window. -->
-                    <Button Height="23" HorizontalAlignment="Right" Margin="0,0,11,9" VerticalAlignment="Bottom" Width="25" FontSize="18">
-                        <Button.Content>
-                            <TextBlock Margin="0,-5,0,0">»</TextBlock>
-                        </Button.Content>
-                    </Button>
-
-                </Grid>
             </TabItem>
 
         </TabControl>
