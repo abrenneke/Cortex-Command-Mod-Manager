@@ -13,5 +13,10 @@ namespace CortexCommandModManager.Extensions
             foreach (var item in source)
                 action(item);
         }
+
+        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source)
+        {
+            return source.ToDictionary(x => x.Key, x => x.Value);
+        }
     }
 }

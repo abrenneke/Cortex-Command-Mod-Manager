@@ -18,6 +18,12 @@ namespace CortexCommandModManager.MVVM.Utilities
             this.canExecute = x => true;
         }
 
+        public Command(Action action, Func<bool> canExecute)
+        {
+            this.action = action;
+            this.canExecute = x => canExecute();
+        }
+
         public Command(Action action, Func<object, bool> canExecute)
         {
             this.action = action;

@@ -1,0 +1,36 @@
+//Predefined are
+	Activity_Description
+	Activity_Script_File
+	Activity_Actor_List
+	Activity_Weapon_List
+	Activity_Craft_List
+	
+[Activity Name=Custom Defense]
+
+[Variable=Lua_Class_Name Value=CustomDefense]
+
+[Variable=Actors_Per_Craft Type=MinMax Min=0 Max=8]
+[Variable=Weapons_Per_Actor Type=MinMax Min=0 Max=4]
+
+[Variable=Activity_Actor_List Use=True]
+[Variable=Activity_Weapon_List Use=True]
+[Variable=Activity_Craft_List Use=True]
+
+[IniFormat]
+
+AddActivity = GAScripted
+	PresetName = [Activity_Description]
+	SceneName = Katanot Hills
+	PlayerCount = 3
+	ScriptFile = [Activity_Script_File]
+	TeamOfPlayer1 = 0
+	TeamOfPlayer2 = 1
+	TeamOfPlayer3 = 2
+	TeamOfPlayer4 = 3
+	TeamCount = 4
+	MinTeamsRequired = 1
+	LuaClassName = [Lua_Class_Name]
+
+[/IniFormat]
+
+[LuaFile=CustomDefense.lua]

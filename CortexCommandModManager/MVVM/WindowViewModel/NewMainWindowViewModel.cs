@@ -11,6 +11,7 @@ using CortexCommandModManager.MVVM.WindowViewModel.Menu;
 using CortexCommandModManager.MVVM.WindowViewModel.ModsTab;
 using CortexCommandModManager.MVVM.WindowViewModel.BrowseTab;
 using System.Diagnostics;
+using CortexCommandModManager.MVVM.WindowViewModel.ActivitiesTab;
 
 namespace CortexCommandModManager.MVVM.WindowViewModel
 {
@@ -25,12 +26,6 @@ namespace CortexCommandModManager.MVVM.WindowViewModel
         /// <summary>Gets or sets the view model for the Mods tab.</summary>
         public ModsTabViewModel ModsTabViewModel { get; set; }
 
-        /// <summary>Gets or sets the view model for the Settings tab.</summary>
-        public SettingsTabViewModel SettingsTabViewModel { get; set; }
-
-        /// <summary>Gets or sets the view model for the Skirmishes tab.</summary>
-        public SkirmishesViewModel SkirmishesViewModel { get; set; }
-
         /// <summary>Gets or sets the view model for the Browse Mods tab.</summary>
         public BrowseTabViewModel BrowseViewModel 
         { 
@@ -42,6 +37,9 @@ namespace CortexCommandModManager.MVVM.WindowViewModel
             } 
         }
         private BrowseTabViewModel browseViewModel;
+
+        /// <summary>Gets the </summary>
+        public ActivitiesTabViewModel ActivitiesViewModel { get; set; }
 
         /// <summary>Gets or sets the width of the window.</summary>
         public double WindowWidth { get { return windowWidth; } set { windowWidth = value; OnPropertyChanged(x => WindowWidth); } }
@@ -78,7 +76,7 @@ namespace CortexCommandModManager.MVVM.WindowViewModel
 
         public void Initialize()
         {
-            foreach (var viewModel in new IViewModel[] { MenuViewModel, ModsTabViewModel, SettingsTabViewModel, SkirmishesViewModel })
+            foreach (var viewModel in new IViewModel[] { MenuViewModel, ModsTabViewModel, ActivitiesViewModel })
             {
                 var initializable = viewModel as IInitializable;
                 if (initializable != null)

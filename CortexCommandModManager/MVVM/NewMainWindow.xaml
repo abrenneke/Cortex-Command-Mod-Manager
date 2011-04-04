@@ -178,7 +178,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
-                                <DataTemplate DataType="{x:Type vm:ModDatabaseModViewModel}">
+                                <DataTemplate>
                                     <Grid Height="100">
                                         <Grid.Background>
                                             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -246,7 +246,73 @@
             </TabItem>
 
             <!-- Activities Tab -->
-            <TabItem Header="Activities">
+            <TabItem Header="Activities" DataContext="{Binding ActivitiesViewModel}"
+                     xmlns:vm="clr-namespace:CortexCommandModManager.MVVM.WindowViewModel.ActivitiesTab"
+                     xmlns:vms="clr-namespace:CortexCommandModManager.MVVM.Utilities">
+                <Grid>
+                    <DockPanel>
+
+                        <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
+                            <ToolBar>
+                                <Button Command="{Binding AddActivityCommand}" ToolTip="Add New Activity">
+                                    <Image Source="pack://application:,,,/CortexCommandModManager;component/Resources/icon-add.png" Width="16" Height="16" />
+                                </Button>
+                            </ToolBar>
+                        </ToolBarTray>
+
+                        <ListView ItemsSource="{Binding Activities}" DockPanel.Dock="Left" Width="150">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="Name" />
+                                        <Binding Path="ActivityName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Grid>
+
+                        </Grid>
+                    </DockPanel>
+
+                    <controls:Overlay IsShown="{Binding IsAddingActivity}" vms:DesignMode.IsHidden="False">
+                        <Border Background="White" BorderBrush="Silver" BorderThickness="1" Width="300" Height="150" CornerRadius="5">
+                            <Grid>
+                                <TextBlock Text="Add New Activity" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                                <Grid Margin="0,30,0,0">
+                                    <Label Content="Activity Name:" 
+                                           VerticalAlignment="Top" HorizontalAlignment="Left" Margin="32,16,0,0" />
+                                    
+                                    <TextBox Text="{Binding NewActivityName, UpdateSourceTrigger=PropertyChanged}" vms:TextBoxAttached.EnterCommand="{Binding ConfirmNewActivityCommand}"
+                                             VerticalAlignment="Top" HorizontalAlignment="Left" Margin="129,18,0,0" Width="141" />
+                                    
+                                    <Label Content="Activity Type:" 
+                                           VerticalAlignment="Top" HorizontalAlignment="Left" Margin="32,48,0,0"  />
+                                    
+                                    <ComboBox ItemsSource="{Binding ActivityTypes}" SelectedItem="{Binding NewActivityType}" 
+                                              VerticalAlignment="Top" HorizontalAlignment="Left" Margin="129,50,0,0" Width="141" >
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    
+                                    <Button Command="{Binding ConfirmNewActivityCommand}" Content="Add Activity" Padding="3"
+                                            VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="73,0,0,8" />
+                                    
+                                    <Button Command="{Binding CancelNewActivityCommand}" Content="Cancel" Padding="3"
+                                            VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="151,0,0,8" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </controls:Overlay>
+
+                </Grid>
             </TabItem>
 
         </TabControl>

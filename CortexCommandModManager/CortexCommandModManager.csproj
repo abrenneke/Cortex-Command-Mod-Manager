@@ -158,6 +158,7 @@
     <Compile Include="MVVM\Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Controls\Overlay.cs" />
     <Compile Include="MVVM\Native\MARGINS.cs" />
     <Compile Include="MVVM\Native\NativeWindow.cs" />
     <Compile Include="MVVM\NewMainWindow.xaml.cs">
@@ -175,11 +176,15 @@
     <Compile Include="MVVM\Utilities\EventHandlerGenerator.cs" />
     <Compile Include="MVVM\Utilities\IInitializable.cs" />
     <Compile Include="MVVM\Utilities\IViewModel.cs" />
+    <Compile Include="MVVM\Utilities\TextBoxEnterKey.cs" />
     <Compile Include="MVVM\Utilities\ViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ActivitiesTab\ActivitiesTabViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ActivitiesTab\ActivityTypeViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ActivitiesTab\ActivityViewModel.cs" />
+    <Compile Include="MVVM\WindowViewModel\ActivitiesTab\SavedActivitiesManager.cs" />
     <Compile Include="MVVM\WindowViewModel\BrowseTab\BrowseTabViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\BrowseTab\DownloadedModSaver.cs" />
     <Compile Include="MVVM\WindowViewModel\BrowseTab\ModDatabaseModViewModel.cs" />
-    <Compile Include="MVVM\WindowViewModel\GameSettingsTab\GameSettings.cs" />
     <Compile Include="MVVM\WindowViewModel\Menu\MenuIcons.cs" />
     <Compile Include="MVVM\WindowViewModel\Menu\MenuViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\ModsTab\ModListItemTemplateSelector.cs" />
@@ -189,9 +194,13 @@
     <Compile Include="MVVM\WindowViewModel\ModsTab\PresetViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\NewMainWindowViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\ModsTab\ModsTabViewModel.cs" />
-    <Compile Include="MVVM\WindowViewModel\GameSettingsTab\SettingsTabViewModel.cs" />
     <Compile Include="MVVM\WindowViewModel\Resource.cs" />
-    <Compile Include="MVVM\WindowViewModel\SkirmishesViewModel.cs" />
+    <Compile Include="NewActivities\Activity.cs" />
+    <Compile Include="NewActivities\ActivityFileReader.cs" />
+    <Compile Include="NewActivities\ActivityLoader.cs" />
+    <Compile Include="NewActivities\ActivityLuaFile.cs" />
+    <Compile Include="NewActivities\ActivityVariable.cs" />
+    <Compile Include="NewActivities\ParsedActivity.cs" />
     <Compile Include="PreinstalledMods.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="Activities\RandomSettingsWindow.xaml.cs">
@@ -259,10 +268,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\StandardWindowResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MVVM\WindowViewModel\GameSettingsTab\GameSettingsTabResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -338,6 +343,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="IniSettingFile.cs" />
+    <None Include="DefaultFiles\Activities\CustomDefense.act\CustomDefense.act">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="DefaultFiles\Activities\CustomDefense.act\CustomDefense.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
